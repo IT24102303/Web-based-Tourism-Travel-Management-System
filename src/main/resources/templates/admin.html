@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Island Breeze Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #ff4da6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #3a86ff);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d90429);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 70%);
+            z-index: -1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+        }
+
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(72, 149, 239, 0.1));
+            border-radius: 12px;
+            margin: 0 auto 1rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .dashboard-card p {
+            color: var(--gray-dark);
+        }
+
+        /* Forms */
+        .form-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Table Styles */
+        .tours-table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--dark);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        tr:hover {
+            background-color: rgba(67, 97, 238, 0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 6rem 0 3rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="logo-text">Island Breeze Travels</div>
+            </a>
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="admin.html">Admin</a></li>
+                    <li><a href="manage-tours.html">Manage Tours</a></li>
+                    <li><a href="finance.html">Finance</a></li>
+                    <li><a href="marketing.html">Marketing</a></li>
+                    <li><a href="#analytics">Analytics</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="#" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">Admin Dashboard</h1>
+            <p class="page-subtitle">Manage users, edit database records, and perform system backups</p>
+            <a href="#user-management" class="btn btn-accent btn-lg">
+                <i class="fas fa-plus"></i> Add New User
+            </a>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Analytics Overview</h2>
+                <p>Key metrics for your travel platform</p>
+            </div>
+            <div class="dashboard-cards animate delay-1">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Total Users</h3>
+                    <p>50,234</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <h3>Active Bookings</h3>
+                    <p>1,892</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Support Tickets</h3>
+                    <p>245</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3>Revenue (This Month)</h3>
+                    <p>$124,567</p>
+                </div>
+            </div>
+
+            <div class="section-title animate delay-2" id="user-management">
+                <h2>User Management</h2>
+                <p>Add or edit user accounts for your platform</p>
+            </div>
+            <div class="form-section animate delay-2">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <h3>Add New User</h3>
+                        <form id="user-form">
+                            <div class="form-group">
+                                <label for="user-name" class="form-label">Name</label>
+                                <input type="text" id="user-name" class="form-control" placeholder="Enter user name">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-email" class="form-label">Email</label>
+                                <input type="email" id="user-email" class="form-control" placeholder="Enter user email">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-role" class="form-label">Role</label>
+                                <select id="user-role" class="form-control">
+                                    <option value="user">User</option>
+                                    <option value="staff">Staff</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="reset" class="btn btn-outline">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="saveUser()">Save User</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-group">
+                        <h3>Edit User</h3>
+                        <div class="tours-table-container">
+                            <div class="table-header">
+                                <h2 class="table-title">User List</h2>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>John Doe</td>
+                                        <td>john@example.com</td>
+                                        <td>User</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-success btn-sm" onclick="editUser('1')">Edit</button>
+                                                <button class="btn btn-danger btn-sm" onclick="deleteUser('1')">Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Jane Smith</td>
+                                        <td>jane@example.com</td>
+                                        <td>Staff</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-success btn-sm" onclick="editUser('2')">Edit</button>
+                                                <button class="btn btn-danger btn-sm" onclick="deleteUser('2')">Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title animate delay-3">
+                <h2>Database Correction</h2>
+                <p>Manually edit database records</p>
+            </div>
+            <div class="form-section animate delay-3">
+                <form id="database-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="table-select" class="form-label">Select Table</label>
+                            <select id="table-select" class="form-control">
+                                <option value="users">Users</option>
+                                <option value="bookings">Bookings</option>
+                                <option value="tickets">Support Tickets</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="record-id" class="form-label">Record ID</label>
+                            <input type="text" id="record-id" class="form-control" placeholder="Enter record ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="record-data" class="form-label">Data (JSON Format)</label>
+                            <textarea id="record-data" class="form-control" placeholder='{"field": "value"}'></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="updateRecord()">Update Record</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-title animate delay-3">
+                <h2>System Backup & Restore</h2>
+                <p>Manage system backups and restores</p>
+            </div>
+            <div class="form-section animate delay-3">
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="initiateBackup()">Initiate Backup</button>
+                    <button class="btn btn-outline" onclick="restoreBackup()">Restore from Backup</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Header scroll effect
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.style.padding = '0.5rem 0';
+                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.padding = '1rem 0';
+                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
+                }
+            });
+        });
+
+        // Mock functions for admin actions
+        function saveUser() {
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const role = document.getElementById('user-role').value;
+
+            if (name && email && role) {
+                alert(`User ${name} saved successfully!`);
+                document.getElementById('user-name').value = '';
+                document.getElementById('user-email').value = '';
+                document.getElementById('user-role').value = 'user';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function editUser(userId) {
+            alert(`Editing user with ID: ${userId}`);
+        }
+
+        function deleteUser(userId) {
+            if (confirm(`Are you sure you want to delete user with ID: ${userId}?`)) {
+                alert(`User ${userId} deleted successfully!`);
+            }
+        }
+
+        function updateRecord() {
+            const table = document.getElementById('table-select').value;
+            const recordId = document.getElementById('record-id').value;
+            const data = document.getElementById('record-data').value;
+
+            try {
+                JSON.parse(data);
+                if (table && recordId && data) {
+                    alert(`Record ${recordId} in ${table} updated successfully!`);
+                    document.getElementById('record-id').value = '';
+                    document.getElementById('record-data').value = '';
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            } catch (e) {
+                alert('Invalid JSON format in data field.');
+            }
+        }
+
+        function initiateBackup() {
+            alert('System backup initiated. You will be notified upon completion.');
+        }
+
+        function restoreBackup() {
+            if (confirm('Are you sure you want to restore from the latest backup? This may overwrite current data.')) {
+                alert('System restore initiated. You will be notified upon completion.');
+            }
+        }
+    </script>
+</body>
+</html>
