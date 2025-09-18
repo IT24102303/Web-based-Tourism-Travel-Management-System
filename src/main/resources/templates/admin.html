@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -547,7 +547,7 @@
             </a>
             <nav class="admin-nav">
                 <ul>
-                    <li><a href="admin.html">Admin</a></li>
+                    <li><a href="/admin">Admin</a></li>
                     <li><a href="manage-tours.html">Manage Tours</a></li>
                     <li><a href="finance.html">Finance</a></li>
                     <li><a href="marketing.html">Marketing</a></li>
@@ -555,7 +555,7 @@
                 </ul>
             </nav>
             <div class="auth-buttons">
-                <a href="#" class="btn btn-danger">Logout</a>
+                <a href="/logout" class="btn btn-danger">Logout</a>
             </div>
         </div>
     </header>
@@ -617,26 +617,30 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <h3>Add New User</h3>
-                        <form id="user-form">
+                        <form id="user-form" th:action="@{/admin/users}" method="post">
                             <div class="form-group">
-                                <label for="user-name" class="form-label">Name</label>
-                                <input type="text" id="user-name" class="form-control" placeholder="Enter user name">
+                                <label for="user-name" class="form-label">Username</label>
+                                <input type="text" id="user-name" name="username" class="form-control" placeholder="Enter username" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-email" class="form-label">Email</label>
-                                <input type="email" id="user-email" class="form-control" placeholder="Enter user email">
+                                <input type="email" id="user-email" name="email" class="form-control" placeholder="Enter user email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password" class="form-label">Password</label>
+                                <input type="password" id="user-password" name="password" class="form-control" placeholder="Temporary password" minlength="6" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-role" class="form-label">Role</label>
-                                <select id="user-role" class="form-control">
-                                    <option value="user">User</option>
-                                    <option value="staff">Staff</option>
-                                    <option value="admin">Admin</option>
+                                <select id="user-role" name="role" class="form-control">
+                                    <option value="USER">User</option>
+                                    <option value="STAFF">Staff</option>
+                                    <option value="ADMIN">Admin</option>
                                 </select>
                             </div>
                             <div class="form-actions">
                                 <button type="reset" class="btn btn-outline">Cancel</button>
-                                <button type="button" class="btn btn-primary" onclick="saveUser()">Save User</button>
+                                <button type="submit" class="btn btn-primary">Save User</button>
                             </div>
                         </form>
                     </div>
@@ -650,34 +654,26 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name</th>
+                                        <th>Username</th>
                                         <th>Email</th>
                                         <th>Role</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>John Doe</td>
-                                        <td>john@example.com</td>
-                                        <td>User</td>
+                                    <tr th:each="u: ${users}">
+                                        <td th:text="${u.id}">1</td>
+                                        <td th:text="${u.username}">Username</td>
+                                        <td th:text="${u.email}">email@example.com</td>
+                                        <td th:text="${u.role}">USER</td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn btn-success btn-sm" onclick="editUser('1')">Edit</button>
-                                                <button class="btn btn-danger btn-sm" onclick="deleteUser('1')">Delete</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Jane Smith</td>
-                                        <td>jane@example.com</td>
-                                        <td>Staff</td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="btn btn-success btn-sm" onclick="editUser('2')">Edit</button>
-                                                <button class="btn btn-danger btn-sm" onclick="deleteUser('2')">Delete</button>
+                                                <button class="btn btn-success btn-sm" type="button"
+                                                        th:attr="data-id=${u.id},data-username=${u.username},data-email=${u.email},data-role=${u.role}"
+                                                        onclick="openEditModal(this)">Edit</button>
+                                                <button class="btn btn-danger btn-sm" type="button"
+                                                        th:attr="data-id=${u.id},data-name=${u.username}"
+                                                        onclick="openDeleteModal(this)">Delete</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -685,6 +681,53 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Edit User Modal -->
+            <div id="edit-modal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; z-index:2000;">
+                <div class="modal-card" style="background:#fff; border-radius:16px; padding:1.5rem; width:95%; max-width:560px; box-shadow:0 10px 30px rgba(0,0,0,.15)">
+                    <h3 style="margin-bottom:1rem">Edit User</h3>
+                    <form id="edit-form" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-username">Username</label>
+                            <input class="form-control" id="edit-username" name="username" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-email">Email</label>
+                            <input class="form-control" id="edit-email" name="email" type="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-role">Role</label>
+                            <select class="form-control" id="edit-role" name="role">
+                                <option value="USER">User</option>
+                                <option value="STAFF">Staff</option>
+                                <option value="ADMIN">Admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-password">New Password (optional)</label>
+                            <input class="form-control" id="edit-password" name="password" type="password" placeholder="Leave blank to keep current">
+                        </div>
+                        <div class="form-actions" style="justify-content:flex-end">
+                            <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Delete Confirm Modal -->
+            <div id="delete-modal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; z-index:2000;">
+                <div class="modal-card" style="background:#fff; border-radius:16px; padding:1.5rem; width:95%; max-width:420px; box-shadow:0 10px 30px rgba(0,0,0,.15)">
+                    <h3 style="margin-bottom:.5rem">Delete User</h3>
+                    <p id="delete-text" style="color:var(--gray-dark); margin-bottom:1rem">Are you sure?</p>
+                    <form id="delete-form" method="post">
+                        <div class="form-actions" style="justify-content:flex-end">
+                            <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -765,30 +808,34 @@
             });
         });
 
-        // Mock functions for admin actions
-        function saveUser() {
-            const name = document.getElementById('user-name').value;
-            const email = document.getElementById('user-email').value;
-            const role = document.getElementById('user-role').value;
-
-            if (name && email && role) {
-                alert(`User ${name} saved successfully!`);
-                document.getElementById('user-name').value = '';
-                document.getElementById('user-email').value = '';
-                document.getElementById('user-role').value = 'user';
-            } else {
-                alert('Please fill in all fields.');
-            }
+        function openEditModal(btn){
+            const id = btn.getAttribute('data-id');
+            const username = btn.getAttribute('data-username');
+            const email = btn.getAttribute('data-email');
+            const role = btn.getAttribute('data-role');
+            const modal = document.getElementById('edit-modal');
+            document.getElementById('edit-username').value = username;
+            document.getElementById('edit-email').value = email;
+            document.getElementById('edit-role').value = role;
+            document.getElementById('edit-password').value = '';
+            const form = document.getElementById('edit-form');
+            form.action = `/admin/users/${id}/update`;
+            modal.style.display = 'flex';
         }
-
-        function editUser(userId) {
-            alert(`Editing user with ID: ${userId}`);
+        function closeEditModal(){
+            document.getElementById('edit-modal').style.display='none';
         }
-
-        function deleteUser(userId) {
-            if (confirm(`Are you sure you want to delete user with ID: ${userId}?`)) {
-                alert(`User ${userId} deleted successfully!`);
-            }
+        function openDeleteModal(btn){
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const modal = document.getElementById('delete-modal');
+            document.getElementById('delete-text').innerText = `Are you sure you want to delete ${name}? This cannot be undone.`;
+            const form = document.getElementById('delete-form');
+            form.action = `/admin/users/${id}/delete`;
+            modal.style.display = 'flex';
+        }
+        function closeDeleteModal(){
+            document.getElementById('delete-modal').style.display='none';
         }
 
         function updateRecord() {
