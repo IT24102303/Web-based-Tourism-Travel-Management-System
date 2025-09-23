@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Island Breeze Travels - All Destinations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            color: var(--primary);
+        }
+
+        .logo-text {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: clamp(0.95rem, 2.5vw, 1rem);
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after,
+        nav ul li a:focus::after {
+            width: 100%;
+        }
+
+        nav ul li a:hover,
+        nav ul li a:focus {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: 2rem;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--danger), #ff4d4d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+            padding: 0.85rem 1.75rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .btn-logout:hover,
+        .btn-logout:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+            background: linear-gradient(135deg, #ff4d4d, var(--danger));
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: clamp(0.95rem, 3vw, 1rem);
+            min-height: 48px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 70%);
+            z-index: -1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            color: var(--gray-dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Destinations Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .section-title p {
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .destination-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .destination-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .destination-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .destination-card:hover .destination-img img {
+            transform: scale(1.1);
+        }
+
+        .destination-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .destination-info {
+            padding: 1.5rem;
+        }
+
+        .destination-info h3 {
+            font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .destination-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--gray);
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        }
+
+        .destination-price {
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .destination-price span {
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-col ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        }
+
+        .footer-col ul li a:hover,
+        .footer-col ul li a:focus {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .social-links a:hover,
+        .social-links a:focus {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .hero-container {
+                text-align: center;
+            }
+
+            .destinations-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                position: relative;
+                padding: 0 1rem;
+            }
+
+            .hamburger {
+                display: block;
+                z-index: 1001;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 5rem 1.5rem 2rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: transform 0.4s ease, opacity 0.4s ease;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                overflow-y: auto;
+            }
+
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+                animation: slideIn 0.4s ease forwards;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            nav ul li a {
+                font-size: 1.2rem;
+                padding: 0.75rem 0;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 2rem 0;
+                margin-left: 0;
+            }
+
+            .auth-buttons .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: clamp(1.5rem, 6vw, 2rem);
+            }
+
+            .destinations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .destination-card {
+                padding: 1.5rem;
+            }
+
+            .destination-img {
+                height: 180px;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-col h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .destination-card {
+                padding: 1.25rem;
+            }
+
+            .btn-lg {
+                padding: 0.75rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Island Breeze Travels Home">
+                <div class="logo-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="logo-text">Island Breeze Travels</div>
+            </a>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav role="navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="destinations.html" aria-current="page">Destinations</a></li>
+                    <li><a href="index.html#how-it-works">How It Works</a></li>
+                    <li><a href="index.html#testimonials">Testimonials</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <a href="/logout.html" class="btn btn-logout">Logout</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-container">
+            <h1 class="hero-title" id="hero-title">Explore Our Destinations</h1>
+            <p class="hero-subtitle">Discover a world of breathtaking destinations and start planning your next adventure with Island Breeze Travels.</p>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="section" id="destinations" aria-labelledby="destinations-title">
+        <div class="container">
+            <div class="section-title animate">
+                <h2 id="destinations-title">All Destinations</h2>
+                <p>Browse our extensive collection of travel destinations around the globe</p>
+            </div>
+            <div class="destinations-grid">
+                <div class="destination-card animate delay-1">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bali, Indonesia beach scene" loading="lazy">
+                        <div class="destination-badge">Trending</div>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Bali, Indonesia</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
+                            <span><i class="fas fa-star"></i> 4.9 (2.4k)</span>
+                        </div>
+                        <div class="destination-price">$899<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-2">
+                    <div class="destination-img">
+                        <img src="https://i.pinimg.com/1200x/f2/36/a2/f236a27daa7d5b774cef01a96f246d37.jpg" alt="Santorini, Greece with white buildings" loading="lazy">
+                    </div>
+                    <div class="destination-info">
+                        <h3>Santorini, Greece</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Mediterranean</span>
+                            <span><i class="fas fa-star"></i> 4.8 (1.9k)</span>
+                        </div>
+                        <div class="destination-price">$1,299<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-3">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Kyoto, Japan temple" loading="lazy">
+                        <div class="destination-badge">Popular</div>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Kyoto, Japan</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> East Asia</span>
+                            <span><i class="fas fa-star"></i> 4.9 (2.1k)</span>
+                        </div>
+                        <div class="destination-price">$1,499<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-1">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1513635269976-35436a86f8dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Paris, France Eiffel Tower" loading="lazy">
+                    </div>
+                    <div class="destination-info">
+                        <h3>Paris, France</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Europe</span>
+                            <span><i class="fas fa-star"></i> 4.7 (3.5k)</span>
+                        </div>
+                        <div class="destination-price">$1,199<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-2">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Cape Town, South Africa coastline" loading="lazy">
+                        <div class="destination-badge">Adventure</div>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Cape Town, South Africa</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Africa</span>
+                            <span><i class="fas fa-star"></i> 4.8 (1.2k)</span>
+                        </div>
+                        <div class="destination-price">$1,399<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-3">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1518241353608-43d6b579d404?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="New York City, USA skyline" loading="lazy">
+                    </div>
+                    <div class="destination-info">
+                        <h3>New York City, USA</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> North America</span>
+                            <span><i class="fas fa-star"></i> 4.6 (2.8k)</span>
+                        </div>
+                        <div class="destination-price">$999<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-1">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Machu Picchu, Peru ruins" loading="lazy">
+                        <div class="destination-badge">Historic</div>
+                    </div>
+                    <div class="destination-info">
+                        <h3>Machu Picchu, Peru</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> South America</span>
+                            <span><i class="fas fa-star"></i> 4.9 (1.5k)</span>
+                        </div>
+                        <div class="destination-price">$1,599<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+                <div class="destination-card animate delay-2">
+                    <div class="destination-img">
+                        <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Venice, Italy canals" loading="lazy">
+                    </div>
+                    <div class="destination-info">
+                        <h3>Venice, Italy</h3>
+                        <div class="destination-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Europe</span>
+                            <span><i class="fas fa-star"></i> 4.7 (2.3k)</span>
+                        </div>
+                        <div class="destination-price">$1,249<span>/person</span></div>
+                        <a href="#" class="btn btn-primary btn-block">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-labelledby="footer-title">
+        <div class="footer-container">
+            <div class="footer-col footer-about">
+                <a href="index.html" class="logo" aria-label="Island Breeze Travels Home">
+                    <div class="logo-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="logo-text">Island Breeze Travels</div>
+                </a>
+                <p>Making travel planning seamless and enjoyable for everyone. Discover your next adventure with our comprehensive travel platform.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Travel Advisory</a></li>
+                    <li><a href="#">Safety Guidelines</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Destinations</h3>
+                <ul>
+                    <li><a href="#">Europe</a></li>
+                    <li><a href="#">Asia</a></li>
+                    <li><a href="#">North America</a></li>
+                    <li><a href="#">South America</a></li>
+                    <li><a href="#">Africa</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">Flight Booking</a></li>
+                    <li><a href="#">Hotel Reservation</a></li>
+                    <li><a href="#">Vacation Packages</a></li>
+                    <li><a href="#">Travel Insurance</a></li>
+                    <li><a href="#">Visa Assistance</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Island Breeze Travels. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for navigation and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('nav');
+            const hamburgerIcon = hamburger.querySelector('i');
+
+            // Toggle mobile menu
+            hamburger.addEventListener('click', function() {
+                const isExpanded = nav.classList.toggle('active');
+                hamburger.setAttribute('aria-expanded', isExpanded);
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-times');
+                document.body.style.overflow = isExpanded ? 'hidden' : '';
+            });
+
+            // Close menu when clicking a nav link
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // Keyboard navigation support
+            nav.querySelectorAll('a, button').forEach(element => {
+                element.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        element.click();
+                    }
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', e => {
+                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Animation on scroll
+            const animatedElements = document.querySelectorAll('.animate');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+
+            // Header scroll effect
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.style.padding = '0.5rem 0';
+                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.padding = '1rem 0';
+                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
