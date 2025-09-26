@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -659,14 +659,14 @@
             </button>
             <nav role="navigation">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#features">Features</a></li>
-                    <li><a href="destinations.html" aria-current="page">Destinations</a></li>
-                    <li><a href="index.html#how-it-works">How It Works</a></li>
-                    <li><a href="index.html#testimonials">Testimonials</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/offers">Offers</a></li>
+                    <li><a href="/my-bookings">My Bookings</a></li>
+
+
                 </ul>
                 <div class="auth-buttons">
-                    <a href="/logout.html" class="btn btn-logout">Logout</a>
+                    <a href="/logout" class="btn btn-logout">Logout</a>
                 </div>
             </nav>
         </div>
@@ -687,135 +687,58 @@
                 <h2 id="destinations-title">All Destinations</h2>
                 <p>Browse our extensive collection of travel destinations around the globe</p>
             </div>
-            <div class="destinations-grid">
-                <div class="destination-card animate delay-1">
+            <!-- Search and Filter Section -->
+            <div class="search-filter-section" style="margin-bottom: 3rem; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);">
+                <form method="get" th:action="@{/destinations}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                    <div>
+                        <label for="search" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">Search</label>
+                        <input type="text" id="search" name="search" th:value="${searchTerm}" placeholder="Search destinations..." style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <label for="region" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">Region</label>
+                        <select id="region" name="region" style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.9rem;">
+                            <option value="">All Regions</option>
+                            <option th:each="region : ${regions}" th:value="${region}" th:text="${region}" th:selected="${region == selectedRegion}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="minPrice" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">Min Price</label>
+                        <input type="number" id="minPrice" name="minPrice" th:value="${minPrice}" placeholder="Min price" min="0" style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <label for="maxPrice" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">Max Price</label>
+                        <input type="number" id="maxPrice" name="maxPrice" th:value="${maxPrice}" placeholder="Max price" min="0" style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Destinations Grid -->
+            <div th:if="${#lists.isEmpty(destinations)}" class="alert alert-info" style="text-align: center; padding: 3rem; background: #d1ecf1; color: #0c5460; border-radius: 12px; margin: 2rem 0;">
+                <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3>No destinations found</h3>
+                <p>Try adjusting your search criteria or check back later for new destinations.</p>
+            </div>
+            
+            <div th:unless="${#lists.isEmpty(destinations)}" class="destinations-grid">
+                <div th:each="destination, iterStat : ${destinations}" class="destination-card animate" th:classappend="${iterStat.index % 3 == 1 ? 'delay-1' : (iterStat.index % 3 == 2 ? 'delay-2' : 'delay-3')}">
                     <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bali, Indonesia beach scene" loading="lazy">
-                        <div class="destination-badge">Trending</div>
+                        <img th:src="${destination.imageUrl}" th:alt="${destination.name}" loading="lazy">
+                        <div th:if="${destination.badge}" class="destination-badge" th:text="${destination.badge}"></div>
                     </div>
                     <div class="destination-info">
-                        <h3>Bali, Indonesia</h3>
+                        <h3 th:text="${destination.name}"></h3>
                         <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
-                            <span><i class="fas fa-star"></i> 4.9 (2.4k)</span>
+                            <span><i class="fas fa-map-marker-alt"></i> <span th:text="${destination.region}"></span></span>
+                            <span th:if="${destination.rating}"><i class="fas fa-star"></i> <span th:text="${destination.rating} + ' (' + ${destination.reviewCount} + ')'"></span></span>
                         </div>
-                        <div class="destination-price">$899<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-2">
-                    <div class="destination-img">
-                        <img src="https://i.pinimg.com/1200x/f2/36/a2/f236a27daa7d5b774cef01a96f246d37.jpg" alt="Santorini, Greece with white buildings" loading="lazy">
-                    </div>
-                    <div class="destination-info">
-                        <h3>Santorini, Greece</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Mediterranean</span>
-                            <span><i class="fas fa-star"></i> 4.8 (1.9k)</span>
-                        </div>
-                        <div class="destination-price">$1,299<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-3">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Kyoto, Japan temple" loading="lazy">
-                        <div class="destination-badge">Popular</div>
-                    </div>
-                    <div class="destination-info">
-                        <h3>Kyoto, Japan</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> East Asia</span>
-                            <span><i class="fas fa-star"></i> 4.9 (2.1k)</span>
-                        </div>
-                        <div class="destination-price">$1,499<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-1">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1513635269976-35436a86f8dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Paris, France Eiffel Tower" loading="lazy">
-                    </div>
-                    <div class="destination-info">
-                        <h3>Paris, France</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Europe</span>
-                            <span><i class="fas fa-star"></i> 4.7 (3.5k)</span>
-                        </div>
-                        <div class="destination-price">$1,199<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-2">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Cape Town, South Africa coastline" loading="lazy">
-                        <div class="destination-badge">Adventure</div>
-                    </div>
-                    <div class="destination-info">
-                        <h3>Cape Town, South Africa</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Africa</span>
-                            <span><i class="fas fa-star"></i> 4.8 (1.2k)</span>
-                        </div>
-                        <div class="destination-price">$1,399<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-3">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1518241353608-43d6b579d404?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="New York City, USA skyline" loading="lazy">
-                    </div>
-                    <div class="destination-info">
-                        <h3>New York City, USA</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> North America</span>
-                            <span><i class="fas fa-star"></i> 4.6 (2.8k)</span>
-                        </div>
-                        <div class="destination-price">$999<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-1">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Machu Picchu, Peru ruins" loading="lazy">
-                        <div class="destination-badge">Historic</div>
-                    </div>
-                    <div class="destination-info">
-                        <h3>Machu Picchu, Peru</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> South America</span>
-                            <span><i class="fas fa-star"></i> 4.9 (1.5k)</span>
-                        </div>
-                        <div class="destination-price">$1,599<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-2">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Venice, Italy canals" loading="lazy">
-                    </div>
-                    <div class="destination-info">
-                        <h3>Venice, Italy</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Europe</span>
-                            <span><i class="fas fa-star"></i> 4.7 (2.3k)</span>
-                        </div>
-                        <div class="destination-price">$1,249<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
+                        <div class="destination-price">$<span th:text="${destination.price}"></span><span>/person</span></div>
+                        <p th:text="${destination.description}" style="font-size: 0.9rem; color: var(--gray); margin-bottom: 1rem; line-height: 1.5;"></p>
+                        <a th:href="@{'/book/' + ${destination.id}}" class="btn btn-primary btn-block">
                             <i class="fas fa-bookmark"></i> Book Now
                         </a>
                     </div>

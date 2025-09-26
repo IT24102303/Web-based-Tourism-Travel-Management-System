@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1031,11 +1031,9 @@
             </button>
             <nav role="navigation">
                 <ul>
-                    <li><a href="#" aria-current="page">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#destinations">Destinations</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/offers">Offers</a></li>
+                    <li><a href="/my-bookings">My Bookings</a></li>
                 </ul>
                 <div class="auth-buttons">
                     <a href="/logout" class="btn btn-logout">Logout</a>
@@ -1051,10 +1049,10 @@
                 <h1 class="hero-title" id="hero-title">Discover Your Next Adventure With Ease</h1>
                 <p class="hero-subtitle">Plan, book, and manage your entire trip in one place. From flights to accommodations and activities, we've got you covered.</p>
                 <div class="hero-buttons">
-                    <a href="destinations.html" class="btn btn-primary btn-lg">
+                    <a href="destinations" class="btn btn-primary btn-lg">
                         <i class="fas fa-search"></i> Explore Destinations
                     </a>
-                    <a href="customer-support.html" class="btn btn-outline btn-lg">
+                    <a href="/customer-support" class="btn btn-outline btn-lg">
                         <i class="fas fa-play"></i> Customer Support
                     </a>
                 </div>
@@ -1141,59 +1139,26 @@
                 <p>Discover the world's most amazing places to visit</p>
             </div>
             <div class="destinations-grid">
-                <div class="destination-card animate delay-1">
+                <div th:each="destination, iterStat : ${popularDestinations}" class="destination-card animate" th:classappend="'delay-' + ${iterStat.index + 1}">
                     <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bali, Indonesia beach scene" loading="lazy">
-                        <div class="destination-badge">Trending</div>
+                        <img th:src="${destination.imageUrl}" th:alt="${destination.name}" loading="lazy">
+                        <div class="destination-badge" th:if="${destination.badge}" th:text="${destination.badge}"></div>
                     </div>
                     <div class="destination-info">
-                        <h3>Bali, Indonesia</h3>
+                        <h3 th:text="${destination.name}"></h3>
                         <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
-                            <span><i class="fas fa-star"></i> 4.9 (2.4k)</span>
+                            <span><i class="fas fa-map-marker-alt"></i> <span th:text="${destination.region}"></span></span>
+                            <span th:if="${destination.rating}"><i class="fas fa-star"></i> <span th:text="${destination.rating} + ' (' + ${destination.reviewCount} + ')'"></span></span>
                         </div>
-                        <div class="destination-price">$899<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-2">
-                    <div class="destination-img">
-                        <img src="https://i.pinimg.com/1200x/f2/36/a2/f236a27daa7d5b774cef01a96f246d37.jpg" alt="Santorini, Greece with white buildings" loading="lazy">
-                    </div>
-                    <div class="destination-info">
-                        <h3>Santorini, Greece</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> Mediterranean</span>
-                            <span><i class="fas fa-star"></i> 4.8 (1.9k)</span>
-                        </div>
-                        <div class="destination-price">$1,299<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
-                            <i class="fas fa-bookmark"></i> Book Now
-                        </a>
-                    </div>
-                </div>
-                <div class="destination-card animate delay-3">
-                    <div class="destination-img">
-                        <img src="https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Kyoto, Japan temple" loading="lazy">
-                        <div class="destination-badge">Popular</div>
-                    </div>
-                    <div class="destination-info">
-                        <h3>Kyoto, Japan</h3>
-                        <div class="destination-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> East Asia</span>
-                            <span><i class="fas fa-star"></i> 4.9 (2.1k)</span>
-                        </div>
-                        <div class="destination-price">$1,499<span>/person</span></div>
-                        <a href="#" class="btn btn-primary btn-block">
+                        <div class="destination-price" th:if="${destination.price}">$<span th:text="${destination.price}"></span><span>/person</span></div>
+                        <a th:href="@{'/book/' + ${destination.id}}" class="btn btn-primary btn-block">
                             <i class="fas fa-bookmark"></i> Book Now
                         </a>
                     </div>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 2rem;">
-                <a href="destinations.html" class="btn btn-outline">
+                <a href="/destinations" class="btn btn-outline">
                     <i class="fas fa-globe-americas"></i> View All Destinations
                 </a>
             </div>

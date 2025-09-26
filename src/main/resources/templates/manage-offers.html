@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Offers - Island Breeze Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #ff4da6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #3a86ff);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d90429);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 70%);
+            z-index: -1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+        }
+
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Forms */
+        .form-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 0rem;
+        }
+
+        .form-actions .btn {
+            min-width: 120px;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .form-actions form {
+            margin: 0;
+        }
+
+        /* Offer Grid */
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .offer-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .offer-img {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .offer-body {
+            padding: 1.5rem;
+        }
+
+        .offer-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .offer-description {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .offer-pricing {
+            margin-bottom: 1rem;
+        }
+
+        .offer-pricing span {
+            font-size: 1rem;
+            color: var(--gray-dark);
+        }
+
+        .offer-pricing strong {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-left: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .offer-dates {
+            font-size: 0.9rem;
+            color: var(--gray-dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .offer-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 6rem 0 3rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .offer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Additional UI improvements */
+        .offer-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .alert {
+            animation: slideInDown 0.5s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="logo-text">Island Breeze Travels</div>
+        </a>
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/admin/destinations">Destinations</a></li>
+                <li><a href="/admin/offers">Offers</a></li>
+                <li><a href="/admin/bookings">Bookings</a></li>
+                <li><a href="/admin/inquiries">Inquiries</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+</header>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="page-header-content">
+        <h1 class="page-title">Manage Offers</h1>
+        <p class="page-subtitle">Create and update promotional offers visible to users</p>
+        <a href="#offer-management" class="btn btn-accent btn-lg">
+            <i class="fas fa-plus"></i> Create New Offer
+        </a>
+    </div>
+</section>
+
+<!-- Offer Management Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-title animate" id="offer-management">
+            <h2>Create New Offer</h2>
+            <p>Add new promotional offers for your travel platform</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${param.created}" class="alert alert-success animate" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-check-circle"></i> Offer created successfully!
+        </div>
+        <div th:if="${param.updated}" class="alert alert-success animate" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-check-circle"></i> Offer updated successfully!
+        </div>
+        <div th:if="${param.deleted}" class="alert alert-success animate" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-check-circle"></i> Offer deleted successfully!
+        </div>
+        <div th:if="${param.error}" class="alert alert-danger animate" style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-exclamation-triangle"></i> An error occurred. Please try again.
+        </div>
+        <div th:if="${param.notfound}" class="alert alert-warning animate" style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-exclamation-triangle"></i> Offer not found.
+        </div>
+
+        <div class="form-section animate delay-1">
+            <form method="post" th:action="@{/admin/offers}">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="offer-title" class="form-label">Title</label>
+                        <input type="text" id="offer-title" name="title" class="form-control" placeholder="Summer Sale 30% Off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-image" class="form-label">Image URL</label>
+                        <input type="text" id="offer-image" name="imageUrl" class="form-control" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-original-price" class="form-label">Original Price</label>
+                        <input type="number" step="0.01" id="offer-original-price" name="originalPrice" class="form-control" placeholder="Enter original price">
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-discounted-price" class="form-label">Discounted Price</label>
+                        <input type="number" step="0.01" id="offer-discounted-price" name="discountedPrice" class="form-control" placeholder="Enter discounted price">
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-start-date" class="form-label">Start Date</label>
+                        <input type="date" id="offer-start-date" name="startDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-end-date" class="form-label">End Date</label>
+                        <input type="date" id="offer-end-date" name="endDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-promo-code" class="form-label">Promo Code</label>
+                        <input type="text" id="offer-promo-code" name="promoCode" class="form-control" placeholder="e.g., WELCOME10" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()">
+                        <small style="color: var(--gray); font-size: 0.9rem;">Unique code for customers to apply this discount</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-active" class="form-label">Active</label>
+                        <select id="offer-active" name="isActive" class="form-control">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-description" class="form-label">Description</label>
+                        <textarea id="offer-description" name="description" class="form-control" placeholder="Describe the offer..." rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions" style="text-align: center; margin-top: 2rem;">
+                    <button type="reset" class="btn btn-outline" style="margin-right: 1rem;">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Create Offer
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="section-title animate delay-2">
+            <h2><i class="fas fa-list"></i> All Offers</h2>
+            <p>View and manage existing promotional offers</p>
+        </div>
+        <div class="offer-grid animate delay-2" th:unless="${#lists.isEmpty(offers)}">
+            <div class="offer-card" th:each="offer : ${offers}">
+                <div class="offer-img" th:style="'background-image: url(' + ${offer.imageUrl} + ')'"></div>
+                <div class="offer-body">
+                    <h3 class="offer-title" th:text="${offer.title}"></h3>
+                    <p class="offer-description" th:text="${offer.description}"></p>
+                    <div class="offer-pricing">
+                        <span th:if="${offer.originalPrice}">$<span th:text="${offer.originalPrice}"></span></span>
+                        <strong th:if="${offer.discountedPrice}" style="margin-left:0.5rem;">$<span th:text="${offer.discountedPrice}"></span></strong>
+                        <span class="badge" th:if="${offer.discountPercent}" th:text="${offer.discountPercent} + '% OFF'"></span>
+                    </div>
+                    <div class="offer-promo-code" th:if="${offer.promoCode}" style="margin: 0.5rem 0; padding: 0.5rem; background: #e3f2fd; border-radius: 4px; font-family: monospace; font-weight: 600; color: var(--primary);">
+                        <i class="fas fa-tag"></i> Promo Code: <span th:text="${offer.promoCode}"></span>
+                    </div>
+                    <div class="offer-dates" style="color: var(--gray-dark); font-size: 0.9rem; margin: 0.5rem 0;" th:text="${offer.startDate} + ' - ' + ${offer.endDate}"></div>
+                    <div class="offer-status" style="margin: 0.5rem 0;">
+                        <span th:if="${offer.isActive}" class="badge badge-success" style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                        <span th:unless="${offer.isActive}" class="badge badge-danger" style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-times-circle"></i> Inactive
+                        </span>
+                    </div>
+                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
+                        <h4 style="color: var(--dark); margin-bottom: 1rem; font-size: 1.1rem;">
+                            <i class="fas fa-edit"></i> Edit Offer
+                        </h4>
+                        <form th:action="@{'/admin/offers/' + ${offer.id} + '/update'}" method="post" class="form-grid">
+                        <input type="hidden" name="id" th:value="${offer.id}">
+                        <div class="form-group">
+                            <label for="update-title-${offer.id}" class="form-label">Title</label>
+                            <input type="text" th:id="'update-title-' + ${offer.id}" name="title" th:value="${offer.title}" class="form-control" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-image-${offer.id}" class="form-label">Image URL</label>
+                            <input type="text" th:id="'update-image-' + ${offer.id}" name="imageUrl" th:value="${offer.imageUrl}" class="form-control" placeholder="Image URL">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-original-price-${offer.id}" class="form-label">Original Price</label>
+                            <input type="number" step="0.01" th:id="'update-original-price-' + ${offer.id}" name="originalPrice" th:value="${offer.originalPrice}" class="form-control" placeholder="Original">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-discounted-price-${offer.id}" class="form-label">Discounted Price</label>
+                            <input type="number" step="0.01" th:id="'update-discounted-price-' + ${offer.id}" name="discountedPrice" th:value="${offer.discountedPrice}" class="form-control" placeholder="Discounted">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-promo-code-${offer.id}" class="form-label">Promo Code</label>
+                            <input type="text" th:id="'update-promo-code-' + ${offer.id}" name="promoCode" th:value="${offer.promoCode}" class="form-control" placeholder="e.g., WELCOME10" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()">
+                            <small style="color: var(--gray); font-size: 0.9rem;">Unique code for customers to apply this discount</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-active-${offer.id}" class="form-label">Active</label>
+                            <select th:id="'update-active-' + ${offer.id}" name="isActive" class="form-control">
+                                <option th:selected="${offer.isActive}" value="true">Active</option>
+                                <option th:selected="${!offer.isActive}" value="false">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Offer
+                            </button>
+                            
+                            <!-- Delete button as separate form but styled inline -->
+                            <form th:action="@{'/admin/offers/' + ${offer.id} + '/delete'}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer? This action cannot be undone.')">
+                                    <i class="fas fa-trash"></i> Delete Offer
+                                </button>
+                            </form>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(offers)}" class="form-section animate delay-2">
+            <p style="color: var(--gray-dark); text-align: center;">No offers yet.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const animatedElements = document.querySelectorAll('.animate');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animatedElements.forEach(element => {
+            observer.observe(element);
+        });
+
+        // Header scroll effect
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.style.padding = '0.5rem 0';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.padding = '1rem 0';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
+            }
+        });
+    });
+</script>
+</body>
+</html>
+

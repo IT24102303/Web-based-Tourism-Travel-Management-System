@@ -1,11 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Support Dashboard - Island Breeze Travels</title>
+    <title>Inquiry Detail - Island Breeze Travels</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background:#f8f9fa; color:#1b263b; }
+        header { position:fixed; top:0; left:0; right:0; background:#fff; padding:1rem 0; box-shadow:0 2px 20px rgba(0,0,0,.05); z-index:10; }
+        .header-container { max-width:1200px; margin:0 auto; padding:0 2rem; display:flex; justify-content:space-between; align-items:center; }
+        .logo { text-decoration:none; display:flex; align-items:center; gap:.5rem; }
+        .logo-text { font-weight:700; background: linear-gradient(to right, #4361ee, #f72585); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .admin-nav ul { list-style:none; display:flex; gap:2rem; }
+        .admin-nav a { text-decoration:none; color:#1b263b; }
+        .container { max-width:1200px; margin:0 auto; padding:0 2rem; }
+        .page-header { margin-top:76px; padding:3rem 0; }
+        .card { background:#fff; border-radius:16px; box-shadow:0 5px 20px rgba(0,0,0,.05); padding:1.5rem; }
+        .grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+        .muted { color:#495057; }
+        .btn { display:inline-flex; align-items:center; gap:.5rem; border:none; border-radius:50px; padding:.5rem 1rem; cursor:pointer; text-decoration:none; }
+        .btn-primary { background: linear-gradient(135deg, #4361ee, #4895ef); color:#fff; }
+        .btn-outline { background:transparent; border:2px solid #4361ee; color:#4361ee; }
+        textarea { width:100%; min-height:140px; padding:1rem; border:2px solid #e9ecef; border-radius:12px; font-family:'Poppins',sans-serif; }
+        .row { display:flex; gap:1rem; align-items:center; }
+        .label { font-weight:600; width:120px; }
+        @media(max-width:768px){ .grid{ grid-template-columns:1fr; } }
+    </style>
     <style>
         :root {
             --primary: #4361ee;
@@ -620,206 +641,78 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <a href="#" class="logo" aria-label="Island Breeze Travels Home">
-                <div class="logo-icon">
-                    <i class="fas fa-globe-americas"></i>
-                </div>
-                <div class="logo-text">Island Breeze Travels</div>
-            </a>
-            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <nav role="navigation">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/my-bookings">My Bookings</a></li>
-                    
-                </ul>
-                <div class="auth-buttons">
-                    <a href="/logout" class="btn btn-logout">Logout</a>
-                </div>
-            </nav>
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="logo-text">Island Breeze Travels</div>
+        </a>
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/admin/destinations">Destinations</a></li>
+                <li><a href="/admin/offers">Offers</a></li>
+                <li><a href="/admin/bookings">Bookings</a></li>
+                <li><a href="/admin/inquiries">Inquiries</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="/logout" class="btn btn-danger">Logout</a>
         </div>
-    </header>
+    </div>
+</header>
 
-    <!-- Page Header -->
     <section class="page-header">
-        <div class="page-header-content">
-            <h1 class="page-title">Customer Support</h1>
-            <p class="page-subtitle">Manage customer support tickets and assist with inquiries</p>
-            <a href="#support-form" class="btn btn-accent btn-lg">
-                <i class="fas fa-paper-plane"></i> Submit New Ticket
-            </a>
+        <div class="container">
+            <h1>Inquiry #<span th:text="${inquiry.id}"></span></h1>
+            <p class="muted">Submitted on <span th:text="${#temporals.format(inquiry.createdAt,'yyyy-MM-dd HH:mm')}"></span></p>
         </div>
     </section>
 
-    <!-- Support Form Section -->
-    <section class="section">
-        <div class="container">
-            <div th:if="${param.submitted}" class="form-section" style="border-left:4px solid #4cc9f0; margin-bottom:1rem;">
-                <div style="color:#4361ee; font-weight:600;"><i class="fas fa-check-circle"></i> Your request was submitted. Our team will contact you shortly.</div>
-            </div>
-            <div class="section-title animate" id="support-form">
-                <h2>Submit a Support Request</h2>
-                <p>Contact our support team for assistance with bookings or inquiries</p>
-            </div>
-            <div class="form-section animate delay-1">
-                <form id="support-form" th:action="@{/customer-support}" th:object="${inquiry}" method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Enter your full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone" class="form-label">Phone Number (Optional)</label>
-                            <input type="tel" id="phone" class="form-control" th:field="*{phone}" placeholder="+1 (555) 000-0000">
-                        </div>
-                        <div class="form-group">
-                            <label for="subject" class="form-label">Subject</label>
-                            <input type="text" id="subject" class="form-control" th:field="*{subject}" placeholder="How can we help?" required>
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label for="message" class="form-label">Message</label>
-                            <textarea id="message" class="form-control" th:field="*{message}" placeholder="Describe your issue or tour package request" required></textarea>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="reset" class="btn btn-outline">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Submit Ticket</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Ticket Status Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-title animate">
-                <h2>Your Support Tickets</h2>
-                <p>View and manage your support tickets</p>
-            </div>
-            <div class="ticket-status-container animate delay-2">
-                <form method="get" action="/customer-support" style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
-                    <input type="email" name="email" class="form-control" style="max-width:320px;" placeholder="Filter by your email" th:value="${myEmail}">
-                    <button type="submit" class="btn btn-primary btn-sm">Load My Tickets</button>
-                </form>
-                <div th:if="${myTickets == null || #lists.isEmpty(myTickets)}" class="ticket-description">No tickets yet. Submit a request above.</div>
-                <div class="ticket-grid" th:if="${myTickets != null && !#lists.isEmpty(myTickets)}">
-                    <div class="ticket-card" th:each="t : ${myTickets}">
-                        <div class="ticket-header">
-                            <span class="ticket-id">TICKET #<span th:text="${t.id}"></span></span>
-                            <span class="ticket-status-badge" th:classappend="${t.status.name() == 'OPEN'} ? ' ticket-status-open' : ' ticket-status-closed'" th:text="${t.status}"></span>
-                        </div>
-                        <div class="ticket-subject" th:text="${t.subject}"></div>
-                        <div class="ticket-description" th:text="${t.message}"></div>
-                        <div class="ticket-actions">
-                            <span class="muted">Created <span th:text="${#temporals.format(t.createdAt,'yyyy-MM-dd HH:mm')}"></span></span>
-                        </div>
-                        <div class="ticket-description" th:if="${t.replyMessage}" style="margin-top:.5rem; padding:.75rem; border-left:4px solid #4361ee; background: rgba(67,97,238,.06);">
-                            <strong>Reply:</strong> <span th:text="${t.replyMessage}"></span>
-                            <div class="muted" th:if="${t.repliedAt}">at <span th:text="${#temporals.format(t.repliedAt,'yyyy-MM-dd HH:mm')}"></span></div>
-                        </div>
-                    </div>
+    <section>
+        <div class="container grid">
+            <div class="card">
+                <h3>Details</h3>
+                <div class="row"><div class="label">From</div><div><strong th:text="${inquiry.name}"></strong> (<span th:text="${inquiry.email}"></span>)</div></div>
+                <div class="row" th:if="${inquiry.phone}"><div class="label">Phone</div><div th:text="${inquiry.phone}"></div></div>
+                <div class="row"><div class="label">Subject</div><div th:text="${inquiry.subject}"></div></div>
+                <div style="margin-top:1rem;">
+                    <div class="label" style="margin-bottom:.5rem;">Message</div>
+                    <div class="muted" th:text="${inquiry.message}"></div>
                 </div>
             </div>
+
+            <div class="card">
+                <h3>Reply</h3>
+                <div th:if="${param.replied}" class="muted" style="margin-bottom:1rem;">Reply saved.</div>
+                <form th:action="@{/admin/inquiries/{id}/reply(id=${inquiry.id})}" method="post">
+                    <textarea name="replyMessage" placeholder="Write your reply..." th:text="${inquiry.replyMessage}"></textarea>
+                    <div style="margin-top:1rem; display:flex; gap:1rem;">
+                        <a th:href="@{/admin/inquiries}" class="btn btn-outline">Back</a>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Reply</button>
+                    </div>
+                </form>
+                <div th:if="${inquiry.repliedAt}" class="muted" style="margin-top:1rem;">Last replied at <span th:text="${#temporals.format(inquiry.repliedAt,'yyyy-MM-dd HH:mm')}"></span></div>
+            </div>
         </div>
     </section>
-
-    <script>
-        // Enhanced Navigation Toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.querySelector('.hamburger');
-            const nav = document.querySelector('nav');
-            const hamburgerIcon = hamburger.querySelector('i');
-
-            // Toggle mobile menu
-            hamburger.addEventListener('click', function() {
-                const isExpanded = nav.classList.toggle('active');
-                hamburger.setAttribute('aria-expanded', isExpanded);
-                hamburgerIcon.classList.toggle('fa-bars');
-                hamburgerIcon.classList.toggle('fa-times');
-                document.body.style.overflow = isExpanded ? 'hidden' : '';
-            });
-
-            // Close menu when clicking a nav link
-            nav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    nav.classList.remove('active');
-                    hamburger.setAttribute('aria-expanded', 'false');
-                    hamburgerIcon.classList.add('fa-bars');
-                    hamburgerIcon.classList.remove('fa-times');
-                    document.body.style.overflow = '';
-                });
-            });
-
-            // Keyboard navigation support
-            nav.querySelectorAll('a, button').forEach(element => {
-                element.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        element.click();
-                    }
-                });
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
-                    nav.classList.remove('active');
-                    hamburger.setAttribute('aria-expanded', 'false');
-                    hamburgerIcon.classList.add('fa-bars');
-                    hamburgerIcon.classList.remove('fa-times');
-                    document.body.style.overflow = '';
-                }
-            });
-
-            // Animation on scroll
-            const animatedElements = document.querySelectorAll('.animate');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            animatedElements.forEach(element => {
-                observer.observe(element);
-            });
-
-            // Header scroll effect
-            const header = document.querySelector('header');
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 100) {
-                    header.style.padding = '0.5rem 0';
-                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-                } else {
-                    header.style.padding = '1rem 0';
-                    header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
-                }
-            });
-
-            // Ticket view/close mocks keep as-is
-            function viewTicket(ticketId) {
-                alert(`Viewing details for Ticket #${ticketId}`);
-            }
-
-            function closeTicket(ticketId) {
-                alert(`Ticket #${ticketId} has been closed.`);
-            }
-        });
-    </script>
+<script>
+    window.onclick = function(event) {
+        const statusModal = document.getElementById('statusModal');
+        const slipModal = document.getElementById('slipModal');
+        if (event.target == statusModal) closeStatusModal();
+        if (event.target == slipModal) closeSlipModal();
+    }
+</script>
 </body>
 </html>
+
+
+
+
+
+
+

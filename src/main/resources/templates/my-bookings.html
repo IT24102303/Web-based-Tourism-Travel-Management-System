@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Island Breeze Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles (from index.html) */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: 2rem; /* Increased spacing for logout button */
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .logo-icon { font-size: clamp(1.5rem, 5vw, 1.8rem); color: var(--primary); }
+        .logo-text { font-size: clamp(1.2rem, 4vw, 1.5rem); font-weight: 700; color: var(--dark); background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: all 0.3s ease; }
+        nav { display: flex; align-items: center; }
+        nav ul { display: flex; list-style: none; gap: clamp(1.5rem, 4vw, 2rem); }
+        nav ul li { position: relative; }
+        nav ul li a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: clamp(0.95rem, 2.5vw, 1rem); padding: 0.5rem 0; transition: all 0.3s ease; display: block; }
+        nav ul li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s ease; }
+        nav ul li a:hover::after, nav ul li a:focus::after { width: 100%; }
+        nav ul li a:hover, nav ul li a:focus { color: var(--primary); }
+        .hamburger { display: none; font-size: 1.8rem; background: none; border: none; color: var(--dark); cursor: pointer; padding: 0.75rem; border-radius: 8px; transition: background-color 0.3s ease; }
+        .hamburger:hover, .hamburger:focus { background-color: rgba(67, 97, 238, 0.1); }
+        .btn-logout {
+            background: linear-gradient(135deg, var(--danger), #ff4d4d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+            padding: 0.85rem 1.75rem; /* Slightly larger for emphasis */
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .btn-logout:hover,
+        .btn-logout:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+            background: linear-gradient(135deg, #ff4d4d, var(--danger));
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #ff4da6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+        }
+
+        .btn-accent:hover,
+        .btn-accent:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.4);
+        }
+
+        /* Page specific */
+        .container { max-width: 1200px; margin: 0 auto; padding: 7rem 1rem 2rem; }
+
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { color: var(--primary); font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .header p { color: var(--gray-dark); font-size: 1.1rem; }
+
+        .tabs { display: flex; justify-content: center; margin-bottom: 2rem; background: white; border-radius: 12px; padding: 0.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); max-width: 500px; margin-left: auto; margin-right: auto; }
+        .tab { flex: 1; padding: 0.75rem 1.5rem; text-align: center; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; font-weight: 600; color: var(--gray-dark); }
+        .tab.active { background: var(--primary); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .bookings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+        .booking-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
+        .booking-card:hover { transform: translateY(-5px); }
+        .booking-image { height: 200px; background-size: cover; background-position: center; position: relative; }
+        .booking-status { position: absolute; top: 1rem; right: 1rem; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .status-pending { background: var(--warning); color: white; }
+        .status-approved { background: var(--success); color: white; }
+        .status-rejected { background: var(--danger); color: white; }
+        .status-cancelled { background: var(--danger); color: white; }
+        .status-completed { background: var(--primary); color: white; }
+        .booking-info { padding: 1.5rem; }
+        .booking-destination { font-size: 1.25rem; font-weight: 600; color: var(--dark); margin-bottom: 0.5rem; }
+        .booking-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: var(--gray-dark); }
+        .booking-detail { display: flex; align-items: center; gap: 0.5rem; }
+        .booking-detail i { color: var(--primary); width: 16px; }
+        .booking-amount { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; }
+        .booking-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray-dark); }
+        .empty-state i { font-size: 4rem; color: var(--gray); margin-bottom: 1rem; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--dark); }
+
+        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 500; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .stat-label { color: var(--gray-dark); font-weight: 500; }
+
+        @media (max-width: 768px) {
+            .container { padding: 6rem 1rem 2rem; }
+            .header h1 { font-size: 2rem; }
+            .bookings-grid { grid-template-columns: 1fr; }
+            .booking-details { grid-template-columns: 1fr; }
+            .booking-actions { flex-direction: column; }
+            .stats { grid-template-columns: 1fr; }
+            .hamburger { display: block; z-index: 1001; }
+            nav { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); padding: 5rem 1.5rem 2rem; transform: translateY(-100%); opacity: 0; visibility: hidden; transition: transform 0.4s ease, opacity 0.4s ease; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
+            nav.active { transform: translateY(0); opacity: 1; visibility: visible; }
+            nav ul { flex-direction: column; gap: 2rem; text-align: center; }
+            nav ul li a { font-size: 1.2rem; padding: 0.75rem 0; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+            .auth-buttons { flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem 0; margin-left: 0; }
+            .auth-buttons .btn { width: 100%; max-width: 200px; }
+        }
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-col ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        }
+
+        .footer-col ul li a:hover,
+        .footer-col ul li a:focus {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .social-links a:hover,
+        .social-links a:focus {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!-- Header (copied from index.html) -->
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo" aria-label="Island Breeze Travels Home">
+                <div class="logo-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="logo-text">Island Breeze Travels</div>
+            </a>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav role="navigation">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/offers">Offers</a></li>
+                    <li><a href="/my-bookings">My Bookings</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <a href="/logout" class="btn btn-logout">Logout</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bookmark"></i> My Bookings</h1>
+            <p>Manage your travel bookings and view booking history</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        </div>
+
+        <!-- Booking Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(bookings)}">0</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(upcomingBookings)}">0</div>
+                <div class="stat-label">Upcoming Trips</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${#lists.size(pastBookings)}">0</div>
+                <div class="stat-label">Completed Trips</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('all')">All Bookings</div>
+            <div class="tab" onclick="showTab('upcoming')">Upcoming</div>
+            <div class="tab" onclick="showTab('past')">Past Trips</div>
+        </div>
+
+        <!-- All Bookings Tab -->
+        <div id="all-bookings" class="tab-content active">
+            <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <h3>No Bookings Yet</h3>
+                <p>You haven't made any bookings yet. Start exploring our destinations!</p>
+                <a href="/destinations" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-search"></i> Browse Destinations
+                </a>
+            </div>
+            <div th:unless="${#lists.isEmpty(bookings)}" class="bookings-grid">
+                <div th:each="booking : ${bookings}" class="booking-card">
+                    <div class="booking-image" th:style="'background-image: url(' + ${booking.destination.imageUrl} + ')'">
+                        <div class="booking-status" th:class="'status-' + ${booking.status.name().toLowerCase()}" th:text="${booking.status.displayName}"></div>
+                    </div>
+                    <div class="booking-info">
+                        <div class="booking-destination" th:text="${booking.destination.name}"></div>
+                        <div class="booking-details">
+                            <div class="booking-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span th:text="${#temporals.format(booking.travelDate, 'MMM dd, yyyy')}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-users"></i>
+                                <span th:text="${booking.numberOfTravelers} + ' traveler(s)'"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${booking.destination.region}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-receipt"></i>
+                                <span th:text="'Booking #' + ${booking.id}"></span>
+                            </div>
+                        </div>
+                        <div class="booking-amount">$<span th:text="${booking.totalAmount}"></span></div>
+                        <div th:if="${booking.promoCode}" class="booking-promo" style="margin: 0.5rem 0; padding: 0.5rem; background: #e3f2fd; border-radius: 8px; font-family: monospace; font-weight: 600; color: var(--primary); text-align: center; font-size: 0.9rem;">
+                            <i class="fas fa-tag"></i> Used Code: <span th:text="${booking.promoCode}"></span>
+                            <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
+                        </div>
+                        <div class="booking-actions">
+                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-primary" onclick="confirmBooking([[${booking.id}]])">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </a>
+                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-danger" onclick="cancelBooking([[${booking.id}]])">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <a th:if="${booking.status.name() == 'APPROVED'}" href="#" class="btn btn-success">
+                                <i class="fas fa-check"></i> Confirmed
+                            </a>
+                            <a th:if="${booking.status.name() == 'REJECTED'}" href="/destinations" class="btn btn-primary">
+                                <i class="fas fa-redo"></i> Book Again
+                            </a>
+                            <a th:if="${booking.status.name() == 'CANCELLED'}" href="/destinations" class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Book Another
+                            </a>
+                            <a th:if="${booking.status.name() == 'COMPLETED'}" href="/destinations" class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Book Similar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Bookings Tab -->
+        <div id="upcoming-bookings" class="tab-content">
+            <div th:if="${#lists.isEmpty(upcomingBookings)}" class="empty-state">
+                <i class="fas fa-calendar-check"></i>
+                <h3>No Upcoming Trips</h3>
+                <p>You don't have any upcoming trips scheduled. Plan your next adventure!</p>
+                <a href="/destinations" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-search"></i> Browse Destinations
+                </a>
+            </div>
+            <div th:unless="${#lists.isEmpty(upcomingBookings)}" class="bookings-grid">
+                <div th:each="booking : ${upcomingBookings}" class="booking-card">
+                    <div class="booking-image" th:style="'background-image: url(' + ${booking.destination.imageUrl} + ')'">
+                        <div class="booking-status" th:class="'status-' + ${booking.status.name().toLowerCase()}" th:text="${booking.status.displayName}"></div>
+                    </div>
+                    <div class="booking-info">
+                        <div class="booking-destination" th:text="${booking.destination.name}"></div>
+                        <div class="booking-details">
+                            <div class="booking-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span th:text="${#temporals.format(booking.travelDate, 'MMM dd, yyyy')}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-users"></i>
+                                <span th:text="${booking.numberOfTravelers} + ' traveler(s)'"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${booking.destination.region}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-receipt"></i>
+                                <span th:text="'Booking #' + ${booking.id}"></span>
+                            </div>
+                        </div>
+                        <div class="booking-amount">$<span th:text="${booking.totalAmount}"></span></div>
+                        <div th:if="${booking.promoCode}" class="booking-promo" style="margin: 0.5rem 0; padding: 0.5rem; background: #e3f2fd; border-radius: 8px; font-family: monospace; font-weight: 600; color: var(--primary); text-align: center; font-size: 0.9rem;">
+                            <i class="fas fa-tag"></i> Used Code: <span th:text="${booking.promoCode}"></span>
+                            <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
+                        </div>
+                        <div class="booking-actions">
+                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-primary" onclick="confirmBooking([[${booking.id}]])">
+                                <i class="fas fa-check"></i> Confirm
+                            </a>
+                            <a th:if="${booking.status.name() == 'PENDING' or booking.status.name() == 'CONFIRMED'}" href="#" class="btn btn-danger" onclick="cancelBooking([[${booking.id}]])">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <a href="/destinations" class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Book Another
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Bookings Tab -->
+        <div id="past-bookings" class="tab-content">
+            <div th:if="${#lists.isEmpty(pastBookings)}" class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3>No Past Trips</h3>
+                <p>You haven't completed any trips yet. Start your travel journey today!</p>
+                <a href="/destinations" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-search"></i> Browse Destinations
+                </a>
+            </div>
+            <div th:unless="${#lists.isEmpty(pastBookings)}" class="bookings-grid">
+                <div th:each="booking : ${pastBookings}" class="booking-card">
+                    <div class="booking-image" th:style="'background-image: url(' + ${booking.destination.imageUrl} + ')'">
+                        <div class="booking-status" th:class="'status-' + ${booking.status.name().toLowerCase()}" th:text="${booking.status.displayName}"></div>
+                    </div>
+                    <div class="booking-info">
+                        <div class="booking-destination" th:text="${booking.destination.name}"></div>
+                        <div class="booking-details">
+                            <div class="booking-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span th:text="${#temporals.format(booking.travelDate, 'MMM dd, yyyy')}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-users"></i>
+                                <span th:text="${booking.numberOfTravelers} + ' traveler(s)'"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${booking.destination.region}"></span>
+                            </div>
+                            <div class="booking-detail">
+                                <i class="fas fa-receipt"></i>
+                                <span th:text="'Booking #' + ${booking.id}"></span>
+                            </div>
+                        </div>
+                        <div class="booking-amount">$<span th:text="${booking.totalAmount}"></span></div>
+                        <div th:if="${booking.promoCode}" class="booking-promo" style="margin: 0.5rem 0; padding: 0.5rem; background: #e3f2fd; border-radius: 8px; font-family: monospace; font-weight: 600; color: var(--primary); text-align: center; font-size: 0.9rem;">
+                            <i class="fas fa-tag"></i> Used Code: <span th:text="${booking.promoCode}"></span>
+                            <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
+                        </div>
+                        <div class="booking-actions">
+                            <a href="/destinations" class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Book Similar Trip
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer aria-labelledby="footer-title">
+        <div class="footer-container">
+            <div class="footer-col footer-about">
+                <a href="#" class="logo" aria-label="Island Breeze Travels Home">
+                    <div class="logo-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="logo-text">TravelEase</div>
+                </a>
+                <p>Making travel planning seamless and enjoyable for everyone. Discover your next adventure with our comprehensive travel platform.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Travel Advisory</a></li>
+                    <li><a href="#">Safety Guidelines</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Destinations</h3>
+                <ul>
+                    <li><a href="#">Europe</a></li>
+                    <li><a href="#">Asia</a></li>
+                    <li><a href="#">North America</a></li>
+                    <li><a href="#">South America</a></li>
+                    <li><a href="#">Africa</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">Flight Booking</a></li>
+                    <li><a href="#">Hotel Reservation</a></li>
+                    <li><a href="#">Vacation Packages</a></li>
+                    <li><a href="#">Travel Insurance</a></li>
+                    <li><a href="#">Visa Assistance</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TravelEase. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Nav toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('nav');
+            const hamburgerIcon = hamburger.querySelector('i');
+
+            hamburger.addEventListener('click', function() {
+                const isExpanded = nav.classList.toggle('active');
+                hamburger.setAttribute('aria-expanded', isExpanded);
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-times');
+                document.body.style.overflow = isExpanded ? 'hidden' : '';
+            });
+
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName + '-bookings').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/bookings/' + bookingId + '/cancel';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function confirmBooking(bookingId) {
+            if (confirm('Are you sure you want to confirm this booking?')) {
+                alert('Booking confirmation feature will be implemented in the payment system.');
+            }
+        }
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

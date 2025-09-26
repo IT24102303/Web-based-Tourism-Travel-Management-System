@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Trip - Island Breeze Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--gray-dark);
+            font-size: 1.1rem;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .booking-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-right: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .booking-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .destination-preview {
+            margin-bottom: 2rem;
+        }
+
+        .destination-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .destination-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .destination-meta {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .price-breakdown {
+            border-top: 2px solid #e9ecef;
+            padding-top: 1.5rem;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-item.total {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+            border-top: 1px solid #e9ecef;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .booking-summary {
+                position: static;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-plane"></i> Book Your Trip</h1>
+            <p>Complete your booking details below</p>
+        </div>
+
+        <div class="booking-container">
+            <div class="booking-form">
+                <form th:action="@{'/book/' + ${destination.id}}" th:object="${bookingForm}" method="post">
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Please correct the errors below and try again.
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="travelDate">Travel Date *</label>
+                            <input type="date" id="travelDate" th:field="*{travelDate}" required min="2024-01-01">
+                            <div th:if="${#fields.hasErrors('travelDate')}" class="text-danger" style="color: var(--danger); font-size: 0.9rem; margin-top: 0.25rem;">
+                                <span th:errors="*{travelDate}"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfTravelers">Number of Travelers *</label>
+                            <select id="numberOfTravelers" th:field="*{numberOfTravelers}" required>
+                                <option value="">Select travelers</option>
+                                <option value="1">1 Traveler</option>
+                                <option value="2">2 Travelers</option>
+                                <option value="3">3 Travelers</option>
+                                <option value="4">4 Travelers</option>
+                                <option value="5">5 Travelers</option>
+                                <option value="6">6 Travelers</option>
+                                <option value="7">7 Travelers</option>
+                                <option value="8">8 Travelers</option>
+                                <option value="9">9 Travelers</option>
+                                <option value="10">10 Travelers</option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('numberOfTravelers')}" class="text-danger" style="color: var(--danger); font-size: 0.9rem; margin-top: 0.25rem;">
+                                <span th:errors="*{numberOfTravelers}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem; color: var(--dark);">Contact Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactName">Full Name *</label>
+                            <input type="text" id="contactName" th:field="*{contactName}" required>
+                            <div th:if="${#fields.hasErrors('contactName')}" class="text-danger" style="color: var(--danger); font-size: 0.9rem; margin-top: 0.25rem;">
+                                <span th:errors="*{contactName}"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email Address *</label>
+                            <input type="email" id="contactEmail" th:field="*{contactEmail}" required>
+                            <div th:if="${#fields.hasErrors('contactEmail')}" class="text-danger" style="color: var(--danger); font-size: 0.9rem; margin-top: 0.25rem;">
+                                <span th:errors="*{contactEmail}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPhone">Phone Number</label>
+                        <input type="tel" id="contactPhone" th:field="*{contactPhone}" placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialRequests">Special Requests</label>
+                        <textarea id="specialRequests" th:field="*{specialRequests}" placeholder="Any special requirements, dietary restrictions, or requests..."></textarea>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem; color: var(--dark);">Promo Code</h3>
+                    <div class="form-group">
+                        <label for="promoCode">Promo Code</label>
+                        <input type="text" id="promoCode" th:field="*{promoCode}" placeholder="Enter promo code for discount" style="text-transform: uppercase;">
+                        <div th:if="${#fields.hasErrors('promoCode')}" class="text-danger" style="color: var(--danger); font-size: 0.9rem; margin-top: 0.25rem;">
+                            <span th:errors="*{promoCode}"></span>
+                        </div>
+                        <small style="color: var(--gray); display:block; margin-top: .25rem;">Enter a valid promo code to get a discount on your booking.</small>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem; color: var(--dark);">Payment</h3>
+                    <div class="form-group">
+                        <label for="paymentSlipUrl">Payment Slip URL</label>
+                        <input type="url" id="paymentSlipUrl" th:field="*{paymentSlipUrl}" placeholder="https://link-to-your-payment-slip">
+                        <small style="color: var(--gray); display:block; margin-top: .25rem;">Paste a link to your bank/payment slip image or file.</small>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <a href="/destinations" class="btn btn-outline">
+                            <i class="fas fa-arrow-left"></i> Back to Destinations
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-credit-card"></i> Complete Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="booking-summary">
+                <div class="destination-preview">
+                    <img th:src="${destination.imageUrl}" th:alt="${destination.name}" class="destination-image">
+                    <div class="destination-name" th:text="${destination.name}"></div>
+                    <div class="destination-meta">
+                        <div><i class="fas fa-map-marker-alt"></i> <span th:text="${destination.region}"></span></div>
+                        <div th:if="${destination.rating}"><i class="fas fa-star"></i> <span th:text="${destination.rating} + ' (' + ${destination.reviewCount} + ' reviews)'"></span></div>
+                    </div>
+                    <p th:text="${destination.description}" style="color: var(--gray); font-size: 0.9rem; line-height: 1.5;"></p>
+                </div>
+
+                <div class="price-breakdown">
+                    <h4 style="margin-bottom: 1rem; color: var(--dark);">Price Breakdown</h4>
+                    <div class="price-item">
+                        <span>Price per person:</span>
+                        <span>$<span th:text="${destination.price}"></span></span>
+                    </div>
+                    <div class="price-item">
+                        <span>Number of travelers:</span>
+                        <span id="traveler-count">1</span>
+                    </div>
+                    <div class="price-item" id="subtotal-row" style="display: none;">
+                        <span>Subtotal:</span>
+                        <span id="subtotal-amount">$0.00</span>
+                    </div>
+                    <div class="price-item" id="discount-row" style="display: none; color: var(--success);">
+                        <span>Discount:</span>
+                        <span id="discount-amount">-$0.00</span>
+                    </div>
+                    <div class="price-item total">
+                        <span>Total Amount:</span>
+                        <span id="total-amount">$<span th:text="${destination.price}"></span></span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem; color: var(--gray-dark);">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Important:</strong> This booking will be confirmed after payment processing. You will receive a confirmation email with all details.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDiscount = 0;
+        let currentPromoCode = '';
+
+        // Update price calculation when number of travelers changes
+        document.getElementById('numberOfTravelers').addEventListener('change', function() {
+            updatePriceCalculation();
+        });
+
+        // Handle promo code validation
+        document.getElementById('promoCode').addEventListener('blur', function() {
+            const promoCode = this.value.trim().toUpperCase();
+            if (promoCode && promoCode !== currentPromoCode) {
+                validatePromoCode(promoCode);
+            } else if (!promoCode) {
+                clearDiscount();
+            }
+        });
+
+        function updatePriceCalculation() {
+            const numberOfTravelers = parseInt(document.getElementById('numberOfTravelers').value) || 1;
+            const pricePerPerson = parseFloat(document.querySelector('#price-breakdown .price-item span:last-child').textContent.replace('$', ''));
+            const subtotal = pricePerPerson * numberOfTravelers;
+            const totalAmount = subtotal - currentDiscount;
+            
+            document.getElementById('traveler-count').textContent = numberOfTravelers;
+            document.getElementById('subtotal-amount').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('discount-amount').textContent = '-$' + currentDiscount.toFixed(2);
+            document.getElementById('total-amount').textContent = '$' + totalAmount.toFixed(2);
+            
+            // Show/hide subtotal and discount rows
+            document.getElementById('subtotal-row').style.display = currentDiscount > 0 ? 'flex' : 'none';
+            document.getElementById('discount-row').style.display = currentDiscount > 0 ? 'flex' : 'none';
+        }
+
+        function validatePromoCode(promoCode) {
+            // This would typically make an AJAX call to validate the promo code
+            // For now, we'll simulate with some example codes
+            const validCodes = {
+                'WELCOME10': 0.10,
+                'SAVE20': 0.20,
+                'SUMMER15': 0.15
+            };
+            
+            if (validCodes[promoCode]) {
+                const numberOfTravelers = parseInt(document.getElementById('numberOfTravelers').value) || 1;
+                const pricePerPerson = parseFloat(document.querySelector('#price-breakdown .price-item span:last-child').textContent.replace('$', ''));
+                const subtotal = pricePerPerson * numberOfTravelers;
+                currentDiscount = subtotal * validCodes[promoCode];
+                currentPromoCode = promoCode;
+                
+                // Show success message
+                showPromoMessage('Promo code applied successfully!', 'success');
+                updatePriceCalculation();
+            } else {
+                showPromoMessage('Invalid promo code. Please try again.', 'error');
+                clearDiscount();
+            }
+        }
+
+        function clearDiscount() {
+            currentDiscount = 0;
+            currentPromoCode = '';
+            updatePriceCalculation();
+        }
+
+        function showPromoMessage(message, type) {
+            // Remove existing message
+            const existingMessage = document.querySelector('.promo-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'promo-message';
+            messageDiv.style.cssText = `
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                ${type === 'success' ? 'background: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'}
+            `;
+            messageDiv.textContent = message;
+            
+            document.getElementById('promoCode').parentNode.appendChild(messageDiv);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 3000);
+        }
+
+        // Set minimum date to today
+        document.getElementById('travelDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
+
+
+
+

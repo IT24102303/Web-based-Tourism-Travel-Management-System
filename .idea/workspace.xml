@@ -6,7 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="b5def4b8-c68e-4515-aacc-987888d91d0a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/PageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/PageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/customer-support.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/customer-support.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/destinations.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/destinations.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/manage-tours.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +54,8 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.TourManagement [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.TourManagement [install].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -100,6 +110,12 @@
       <workItem from="1758198950483" duration="1766000" />
       <workItem from="1758203071393" duration="507000" />
       <workItem from="1758603676048" duration="572000" />
+      <workItem from="1758606588505" duration="12695000" />
+      <workItem from="1758625620792" duration="642000" />
+      <workItem from="1758628965559" duration="8215000" />
+      <workItem from="1758778075151" duration="4276000" />
+      <workItem from="1758786977131" duration="7182000" />
+      <workItem from="1758856926860" duration="9052000" />
     </task>
     <servers />
   </component>
