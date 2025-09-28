@@ -7,6 +7,7 @@ import org.example.tourmanagement.destination.DestinationRepository;
 import org.example.tourmanagement.booking.Booking;
 import org.example.tourmanagement.booking.BookingRepository;
 import org.example.tourmanagement.booking.BookingStatus;
+import org.example.tourmanagement.support.InquiryRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Controller
@@ -24,12 +28,14 @@ public class AdminController {
     private final PasswordEncoder passwordEncoder;
     private final DestinationRepository destinationRepository;
     private final BookingRepository bookingRepository;
+    private final InquiryRepository inquiryRepository;
 
-    public AdminController(UserRepository userRepository, PasswordEncoder passwordEncoder, DestinationRepository destinationRepository, BookingRepository bookingRepository) {
+    public AdminController(UserRepository userRepository, PasswordEncoder passwordEncoder, DestinationRepository destinationRepository, BookingRepository bookingRepository, InquiryRepository inquiryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.destinationRepository = destinationRepository;
         this.bookingRepository = bookingRepository;
+        this.inquiryRepository = inquiryRepository;
     }
 
     @GetMapping
@@ -37,7 +43,61 @@ public class AdminController {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
         model.addAttribute("newUser", new CreateUserForm());
+        
+        // Calculate analytics data
+        calculateAnalytics(model);
+        
         return "admin";
+    }
+    
+    private void calculateAnalytics(Model model) {
+        // Total users count
+        long totalUsers = userRepository.count();
+        model.addAttribute("totalUsers", totalUsers);
+        
+        // Active bookings count (APPROVED status)
+        long activeBookings = bookingRepository.countByStatus(BookingStatus.APPROVED);
+        model.addAttribute("activeBookings", activeBookings);
+        
+        // Support tickets count (all inquiries)
+        long supportTickets = inquiryRepository.count();
+        model.addAttribute("supportTickets", supportTickets);
+        
+        // Revenue calculation for current month
+        BigDecimal monthlyRevenue = calculateMonthlyRevenue();
+        model.addAttribute("monthlyRevenue", monthlyRevenue);
+        
+        // Additional analytics
+        long totalBookings = bookingRepository.count();
+        long pendingBookings = bookingRepository.countByStatus(BookingStatus.PENDING);
+        long rejectedBookings = bookingRepository.countByStatus(BookingStatus.REJECTED);
+        long completedBookings = bookingRepository.countByStatus(BookingStatus.COMPLETED);
+        
+        model.addAttribute("totalBookings", totalBookings);
+        model.addAttribute("pendingBookings", pendingBookings);
+        model.addAttribute("rejectedBookings", rejectedBookings);
+        model.addAttribute("completedBookings", completedBookings);
+    }
+    
+    private BigDecimal calculateMonthlyRevenue() {
+        LocalDate now = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(now);
+        LocalDate startOfMonth = currentMonth.atDay(1);
+        LocalDate endOfMonth = currentMonth.atEndOfMonth();
+        
+        List<Booking> monthlyBookings = bookingRepository.findByTravelDateBetween(startOfMonth, endOfMonth);
+        
+        double totalRevenue = monthlyBookings.stream()
+                .filter(booking -> booking.getStatus() == BookingStatus.APPROVED || booking.getStatus() == BookingStatus.COMPLETED)
+                .mapToDouble(booking -> {
+                    if (booking.getDestination() != null && booking.getDestination().getPrice() != null) {
+                        return booking.getDestination().getPrice();
+                    }
+                    return 0.0;
+                })
+                .sum();
+        
+        return BigDecimal.valueOf(totalRevenue);
     }
 
     @PostMapping("/users")

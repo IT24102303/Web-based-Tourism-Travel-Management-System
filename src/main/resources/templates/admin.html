@@ -584,36 +584,68 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <h3>Total Users</h3>
-                    <p>50,234</p>
+                    <p th:text="${totalUsers}">0</p>
                 </div>
                 <div class="dashboard-card">
                     <div class="dashboard-card-icon">
                         <i class="fas fa-ticket-alt"></i>
                     </div>
                     <h3>Active Bookings</h3>
-                    <p>1,892</p>
+                    <p th:text="${activeBookings}">0</p>
                 </div>
                 <div class="dashboard-card">
                     <div class="dashboard-card-icon">
                         <i class="fas fa-headset"></i>
                     </div>
                     <h3>Support Tickets</h3>
-                    <p>245</p>
+                    <p th:text="${supportTickets}">0</p>
                 </div>
                 <div class="dashboard-card">
                     <div class="dashboard-card-icon">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <h3>Revenue (This Month)</h3>
-                    <p>$124,567</p>
+                    <p th:text="${#numbers.formatDecimal(monthlyRevenue, 0, 0)}">$0</p>
+                </div>
+            </div>
+            
+            <!-- Additional Analytics Cards -->
+            <div class="dashboard-cards animate delay-2">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <h3>Total Bookings</h3>
+                    <p th:text="${totalBookings}">0</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Pending Bookings</h3>
+                    <p th:text="${pendingBookings}">0</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Completed Bookings</h3>
+                    <p th:text="${completedBookings}">0</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h3>Rejected Bookings</h3>
+                    <p th:text="${rejectedBookings}">0</p>
                 </div>
             </div>
 
-            <div class="section-title animate delay-2" id="user-management">
+            <div class="section-title animate delay-3" id="user-management">
                 <h2>User Management</h2>
                 <p>Add or edit user accounts for your platform</p>
             </div>
-            <div class="form-section animate delay-2">
+            <div class="form-section animate delay-3">
                 <div class="form-grid">
                     <div class="form-group">
                         <h3>Add New User</h3>
@@ -731,42 +763,11 @@
                 </div>
             </div>
 
-            <div class="section-title animate delay-3">
-                <h2>Database Correction</h2>
-                <p>Manually edit database records</p>
-            </div>
-            <div class="form-section animate delay-3">
-                <form id="database-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="table-select" class="form-label">Select Table</label>
-                            <select id="table-select" class="form-control">
-                                <option value="users">Users</option>
-                                <option value="bookings">Bookings</option>
-                                <option value="tickets">Support Tickets</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="record-id" class="form-label">Record ID</label>
-                            <input type="text" id="record-id" class="form-control" placeholder="Enter record ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="record-data" class="form-label">Data (JSON Format)</label>
-                            <textarea id="record-data" class="form-control" placeholder='{"field": "value"}'></textarea>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="reset" class="btn btn-outline">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="updateRecord()">Update Record</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="section-title animate delay-3">
+            <div class="section-title animate delay-4">
                 <h2>System Backup & Restore</h2>
                 <p>Manage system backups and restores</p>
             </div>
-            <div class="form-section animate delay-3">
+            <div class="form-section animate delay-4">
                 <div class="form-actions">
                     <button class="btn btn-primary" onclick="initiateBackup()">Initiate Backup</button>
                     <button class="btn btn-outline" onclick="restoreBackup()">Restore from Backup</button>
