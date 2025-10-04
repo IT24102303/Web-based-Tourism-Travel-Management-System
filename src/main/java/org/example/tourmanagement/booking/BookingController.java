@@ -147,11 +147,65 @@ public class BookingController {
         return "my-bookings";
     }
 
+    @GetMapping("/bookings/{id}/details")
+    public String viewBookingDetails(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            redirectAttributes.addFlashAttribute("error", "Booking not found");
+            return "redirect:/my-bookings";
+        }
+
+        // Check if the booking belongs to the current user (for now, user ID 1)
+        if (!booking.getUser().getId().equals(1L)) {
+            redirectAttributes.addFlashAttribute("error", "You don't have permission to view this booking");
+            return "redirect:/my-bookings";
+        }
+
+        model.addAttribute("booking", booking);
+        return "booking-details";
+    }
+
+    @PostMapping("/bookings/{id}/delete")
+    public String deleteBooking(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            redirectAttributes.addFlashAttribute("error", "Booking not found");
+            return "redirect:/my-bookings";
+        }
+
+        // Check if the booking belongs to the current user (for now, user ID 1)
+        if (!booking.getUser().getId().equals(1L)) {
+            redirectAttributes.addFlashAttribute("error", "You don't have permission to delete this booking");
+            return "redirect:/my-bookings";
+        }
+
+        // Only allow deletion of cancelled bookings
+        if (booking.getStatus() != BookingStatus.CANCELLED) {
+            redirectAttributes.addFlashAttribute("error", "Only cancelled bookings can be deleted");
+            return "redirect:/my-bookings";
+        }
+
+        try {
+            bookingRepository.delete(booking);
+            redirectAttributes.addFlashAttribute("success", "Booking deleted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to delete booking: " + e.getMessage());
+        }
+
+        return "redirect:/my-bookings";
+    }
+
     @PostMapping("/bookings/{id}/cancel")
     public String cancelBooking(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
             redirectAttributes.addFlashAttribute("error", "Booking not found");
+            return "redirect:/my-bookings";
+        }
+
+        // Check if the booking belongs to the current user (for now, user ID 1)
+        if (!booking.getUser().getId().equals(1L)) {
+            redirectAttributes.addFlashAttribute("error", "You don't have permission to cancel this booking");
             return "redirect:/my-bookings";
         }
 

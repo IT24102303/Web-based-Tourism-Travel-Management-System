@@ -454,10 +454,10 @@
                             <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
                         </div>
                         <div class="booking-actions">
-                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-primary" onclick="confirmBooking([[${booking.id}]])">
+                            <a th:href="@{'/bookings/' + ${booking.id} + '/details'}" class="btn btn-primary">
                                 <i class="fas fa-info-circle"></i> View Details
                             </a>
-                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-danger" onclick="cancelBooking([[${booking.id}]])">
+                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-danger" th:onclick="'cancelBooking(' + ${booking.id} + ')'">
                                 <i class="fas fa-times"></i> Cancel
                             </a>
                             <a th:if="${booking.status.name() == 'APPROVED'}" href="#" class="btn btn-success">
@@ -468,6 +468,9 @@
                             </a>
                             <a th:if="${booking.status.name() == 'CANCELLED'}" href="/destinations" class="btn btn-outline">
                                 <i class="fas fa-plus"></i> Book Another
+                            </a>
+                            <a th:if="${booking.status.name() == 'CANCELLED'}" href="#" class="btn btn-danger" th:onclick="'deleteBooking(' + ${booking.id} + ')'">
+                                <i class="fas fa-trash"></i> Delete
                             </a>
                             <a th:if="${booking.status.name() == 'COMPLETED'}" href="/destinations" class="btn btn-outline">
                                 <i class="fas fa-plus"></i> Book Similar
@@ -519,10 +522,10 @@
                             <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
                         </div>
                         <div class="booking-actions">
-                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-primary" onclick="confirmBooking([[${booking.id}]])">
-                                <i class="fas fa-check"></i> Confirm
+                            <a th:href="@{'/bookings/' + ${booking.id} + '/details'}" class="btn btn-primary">
+                                <i class="fas fa-info-circle"></i> View Details
                             </a>
-                            <a th:if="${booking.status.name() == 'PENDING' or booking.status.name() == 'CONFIRMED'}" href="#" class="btn btn-danger" onclick="cancelBooking([[${booking.id}]])">
+                            <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-danger" th:onclick="'cancelBooking(' + ${booking.id} + ')'">
                                 <i class="fas fa-times"></i> Cancel
                             </a>
                             <a href="/destinations" class="btn btn-outline">
@@ -575,6 +578,9 @@
                             <span th:if="${booking.discountAmount > 0}" style="margin-left: 0.5rem; color: var(--success);">(Saved $<span th:text="${booking.discountAmount}"></span>)</span>
                         </div>
                         <div class="booking-actions">
+                            <a th:href="@{'/bookings/' + ${booking.id} + '/details'}" class="btn btn-primary">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </a>
                             <a href="/destinations" class="btn btn-outline">
                                 <i class="fas fa-plus"></i> Book Similar Trip
                             </a>
@@ -705,11 +711,16 @@
             }
         }
 
-        function confirmBooking(bookingId) {
-            if (confirm('Are you sure you want to confirm this booking?')) {
-                alert('Booking confirmation feature will be implemented in the payment system.');
+        function deleteBooking(bookingId) {
+            if (confirm('Are you sure you want to permanently delete this cancelled booking? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/bookings/' + bookingId + '/delete';
+                document.body.appendChild(form);
+                form.submit();
             }
         }
+
 
         // Auto-hide alerts after 5 seconds
         setTimeout(function() {

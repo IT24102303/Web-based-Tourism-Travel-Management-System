@@ -696,9 +696,22 @@
                     </div>
                 </form>
                 <div th:if="${inquiry.repliedAt}" class="muted" style="margin-top:1rem;">Last replied at <span th:text="${#temporals.format(inquiry.repliedAt,'yyyy-MM-dd HH:mm')}"></span></div>
+                
+                <!-- Delete Action for CLOSED inquiries -->
+                <div th:if="${inquiry.status.name() == 'CLOSED'}" style="margin-top:2rem; padding-top:1rem; border-top:1px solid #e9ecef;">
+                    <h4>Manage Inquiry</h4>
+                    <div style="display:flex; gap:1rem; margin-top:1rem;">
+                        <form th:action="@{/admin/inquiries/{id}/delete(id=${inquiry.id})}" method="post" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this inquiry? This action cannot be undone.')">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete Inquiry
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
 <script>
     window.onclick = function(event) {
         const statusModal = document.getElementById('statusModal');
@@ -709,6 +722,7 @@
 </script>
 </body>
 </html>
+
 
 
 

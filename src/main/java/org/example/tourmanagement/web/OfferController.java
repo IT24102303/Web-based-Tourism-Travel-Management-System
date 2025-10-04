@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -20,11 +19,12 @@ public class OfferController {
 
     @GetMapping("/offers")
     public String offers(Model model) {
-        List<Offer> offers = offerRepository.findActiveAndCurrent(LocalDate.now());
+        List<Offer> offers = offerRepository.findByIsActiveTrue();
         model.addAttribute("offers", offers);
         return "offers";
     }
 }
+
 
 
 

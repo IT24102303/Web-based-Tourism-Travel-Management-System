@@ -66,6 +66,12 @@ public class AdminInquiryController {
         });
         return "redirect:/admin/inquiries?updated";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteInquiry(@PathVariable("id") Long id) {
+        inquiryRepository.deleteById(id);
+        return "redirect:/admin/inquiries?deleted";
+    }
 }
 
 

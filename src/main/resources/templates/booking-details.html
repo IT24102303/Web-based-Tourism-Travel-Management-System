@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Island Breeze Travels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-dark: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            color: var(--primary);
+        }
+
+        .logo-text {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: clamp(0.95rem, 2.5vw, 1rem);
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after,
+        nav ul li a:focus::after {
+            width: 100%;
+        }
+
+        nav ul li a:hover,
+        nav ul li a:focus {
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-left: 2rem;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--danger), #ff4d4d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+            padding: 0.85rem 1.75rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .btn-logout:hover,
+        .btn-logout:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+            background: linear-gradient(135deg, #ff4d4d, var(--danger));
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover,
+        .btn-outline:focus {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d90429);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+        }
+
+        .btn-danger:hover,
+        .btn-danger:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
+        }
+
+        /* Page specific */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 7rem 1rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: var(--gray-dark);
+            font-size: 1.1rem;
+        }
+
+        .booking-details-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .booking-image {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .booking-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-approved {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-rejected {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-cancelled {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-completed {
+            background: var(--primary);
+            color: white;
+        }
+
+        .booking-content {
+            padding: 2rem;
+        }
+
+        .booking-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .booking-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-section {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .info-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .promo-section {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .promo-code {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .discount-amount {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .booking-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-actions {
+                flex-direction: column;
+            }
+
+            .hamburger {
+                display: block;
+                z-index: 1001;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 5rem 1.5rem 2rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: transform 0.4s ease, opacity 0.4s ease;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                overflow-y: auto;
+            }
+
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            nav ul li a {
+                font-size: 1.2rem;
+                padding: 0.75rem 0;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 2rem 0;
+                margin-left: 0;
+            }
+
+            .auth-buttons .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo" aria-label="Island Breeze Travels Home">
+                <div class="logo-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="logo-text">Island Breeze Travels</div>
+            </a>
+            <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav role="navigation">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/offers">Offers</a></li>
+                    <li><a href="/my-bookings">My Bookings</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <a href="/logout" class="btn btn-logout">Logout</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-receipt"></i> Booking Details</h1>
+            <p>Complete information about your travel booking</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        </div>
+
+        <!-- Booking Details Card -->
+        <div class="booking-details-card">
+            <div class="booking-image" th:style="'background-image: url(' + ${booking.destination.imageUrl} + ')'">
+                <div class="booking-status" th:class="'status-' + ${booking.status.name().toLowerCase()}" th:text="${booking.status.displayName}"></div>
+            </div>
+            
+            <div class="booking-content">
+                <h2 class="booking-title" th:text="${booking.destination.name}"></h2>
+                
+                <!-- Promo Code Section -->
+                <div th:if="${booking.promoCode}" class="promo-section">
+                    <i class="fas fa-tag"></i>
+                    <strong>Promo Code Used:</strong>
+                    <span class="promo-code" th:text="${booking.promoCode}"></span>
+                    <div th:if="${booking.discountAmount > 0}" class="discount-amount">
+                        <i class="fas fa-gift"></i> You saved $<span th:text="${booking.discountAmount}"></span>!
+                    </div>
+                </div>
+
+                <div class="booking-info-grid">
+                    <!-- Travel Information -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-plane"></i> Travel Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Travel Date</span>
+                            <span class="info-value" th:text="${#temporals.format(booking.travelDate, 'EEEE, MMMM dd, yyyy')}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Number of Travelers</span>
+                            <span class="info-value" th:text="${booking.numberOfTravelers} + ' person(s)'"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Destination</span>
+                            <span class="info-value" th:text="${booking.destination.name}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Region</span>
+                            <span class="info-value" th:text="${booking.destination.region}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-user"></i> Contact Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Contact Name</span>
+                            <span class="info-value" th:text="${booking.contactName}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value" th:text="${booking.contactEmail}"></span>
+                        </div>
+                        <div class="info-item" th:if="${booking.contactPhone}">
+                            <span class="info-label">Phone</span>
+                            <span class="info-value" th:text="${booking.contactPhone}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Booking Information -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-info-circle"></i> Booking Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Booking ID</span>
+                            <span class="info-value" th:text="'#' + ${booking.id}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <span class="info-value" th:text="${booking.status.displayName}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Created Date</span>
+                            <span class="info-value" th:text="${#temporals.format(booking.createdAt, 'MMM dd, yyyy')}"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Last Updated</span>
+                            <span class="info-value" th:text="${#temporals.format(booking.updatedAt, 'MMM dd, yyyy')}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Information -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-dollar-sign"></i> Pricing Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Base Price per Person</span>
+                            <span class="info-value">$<span th:text="${booking.destination.price}"></span></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Number of Travelers</span>
+                            <span class="info-value" th:text="${booking.numberOfTravelers}"></span>
+                        </div>
+                        <div class="info-item" th:if="${booking.discountAmount > 0}">
+                            <span class="info-label">Discount Applied</span>
+                            <span class="info-value" style="color: var(--success);">-$<span th:text="${booking.discountAmount}"></span></span>
+                        </div>
+                        <div class="info-item" style="border-top: 2px solid var(--primary); font-weight: 700;">
+                            <span class="info-label">Total Amount</span>
+                            <span class="info-value" style="color: var(--primary); font-size: 1.2rem;">$<span th:text="${booking.totalAmount}"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div th:if="${booking.specialRequests}" class="info-section">
+                    <h3><i class="fas fa-comment"></i> Special Requests</h3>
+                    <p th:text="${booking.specialRequests}" style="color: var(--gray-dark); line-height: 1.6;"></p>
+                </div>
+
+                <!-- Payment Information -->
+                <div th:if="${booking.paymentSlipUrl}" class="info-section">
+                    <h3><i class="fas fa-credit-card"></i> Payment Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Payment Slip</span>
+                        <a th:href="${booking.paymentSlipUrl}" target="_blank" class="btn btn-outline btn-sm">
+                            <i class="fas fa-external-link-alt"></i> View Payment Slip
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="booking-actions">
+                    <a href="/my-bookings" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Bookings
+                    </a>
+                    <a th:if="${booking.status.name() == 'PENDING'}" href="#" class="btn btn-danger" th:onclick="'cancelBooking(' + ${booking.id} + ')'">
+                        <i class="fas fa-times"></i> Cancel Booking
+                    </a>
+                    <a th:if="${booking.status.name() == 'CANCELLED'}" href="#" class="btn btn-danger" th:onclick="'deleteBooking(' + ${booking.id} + ')'">
+                        <i class="fas fa-trash"></i> Delete Booking
+                    </a>
+                    <a th:if="${booking.status.name() == 'APPROVED'}" href="/destinations" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Book Another Trip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nav toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('nav');
+            const hamburgerIcon = hamburger.querySelector('i');
+
+            hamburger.addEventListener('click', function() {
+                const isExpanded = nav.classList.toggle('active');
+                hamburger.setAttribute('aria-expanded', isExpanded);
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-times');
+                document.body.style.overflow = isExpanded ? 'hidden' : '';
+            });
+
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/bookings/' + bookingId + '/cancel';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function deleteBooking(bookingId) {
+            if (confirm('Are you sure you want to permanently delete this cancelled booking? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/bookings/' + bookingId + '/delete';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
