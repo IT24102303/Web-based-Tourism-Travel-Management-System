@@ -636,6 +636,7 @@
             <nav role="navigation">
                 <ul>
                     <li><a href="/">Home</a></li>
+                    <li><a href="/offers">Offers</a></li>
                     <li><a href="/my-bookings">My Bookings</a></li>
                     
                 </ul>
@@ -721,8 +722,19 @@
                         </div>
                         <div class="ticket-subject" th:text="${t.subject}"></div>
                         <div class="ticket-description" th:text="${t.message}"></div>
-                        <div class="ticket-actions">
+                        <div class="ticket-actions" style="justify-content: space-between; align-items: center;">
                             <span class="muted">Created <span th:text="${#temporals.format(t.createdAt,'yyyy-MM-dd HH:mm')}"></span></span>
+                            <div th:if="${t.status.name() == 'OPEN' and myEmail != null and myEmail == t.email}" style="display:flex; gap:.5rem;">
+                                <button type="button"
+                                        class="btn btn-success btn-sm btn-edit"
+                                        th:attr="data-id=${t.id},data-email=${myEmail},data-subject=${t.subject},data-message=${t.message}">
+                                    <i class="fas fa-pen"></i> Edit
+                                </button>
+                                <form th:action="@{'/customer-support/' + ${t.id} + '/delete'}" method="post" style="display:inline-block;">
+                                    <input type="hidden" name="email" th:value="${myEmail}">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this ticket?');"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </div>
                         </div>
                         <div class="ticket-description" th:if="${t.replyMessage}" style="margin-top:.5rem; padding:.75rem; border-left:4px solid #4361ee; background: rgba(67,97,238,.06);">
                             <strong>Reply:</strong> <span th:text="${t.replyMessage}"></span>
@@ -733,6 +745,31 @@
             </div>
         </div>
     </section>
+
+    <!-- Edit Ticket Modal -->
+    <div id="edit-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 2000;">
+        <div style="background: #fff; border-radius: 14px; width: min(640px, 92vw); box-shadow: 0 20px 60px rgba(0,0,0,.25); overflow: hidden;">
+            <div style="padding: 1rem 1.25rem; border-bottom: 1px solid #eee; display:flex; align-items:center; justify-content:space-between;">
+                <h3 style="margin:0; font-size:1.1rem;">Edit Ticket</h3>
+                <button type="button" id="edit-close" class="btn btn-outline btn-sm" style="min-height:auto;">Close</button>
+            </div>
+            <form id="edit-form" method="post" style="padding: 1.25rem;">
+                <input type="hidden" name="email" id="edit-email">
+                <div class="form-group">
+                    <label class="form-label" for="edit-subject">Subject</label>
+                    <input class="form-control" id="edit-subject" name="subject" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit-message">Message</label>
+                    <textarea class="form-control" id="edit-message" name="message" rows="5"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="edit-cancel" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // Enhanced Navigation Toggle
@@ -819,6 +856,47 @@
             function closeTicket(ticketId) {
                 alert(`Ticket #${ticketId} has been closed.`);
             }
+
+            // Edit modal logic
+            const editModal = document.getElementById('edit-modal');
+            const editForm = document.getElementById('edit-form');
+            const editEmail = document.getElementById('edit-email');
+            const editSubject = document.getElementById('edit-subject');
+            const editMessage = document.getElementById('edit-message');
+            const editClose = document.getElementById('edit-close');
+            const editCancel = document.getElementById('edit-cancel');
+
+            function openEditModal(data) {
+                editEmail.value = data.email || '';
+                editSubject.value = data.subject || '';
+                editMessage.value = data.message || '';
+                editForm.setAttribute('action', `/customer-support/${data.id}/update`);
+                editModal.style.display = 'flex';
+                setTimeout(() => { editSubject.focus(); }, 0);
+            }
+
+            function closeEditModal() {
+                editModal.style.display = 'none';
+                editForm.removeAttribute('action');
+                editEmail.value = '';
+                editSubject.value = '';
+                editMessage.value = '';
+            }
+
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    openEditModal({
+                        id: btn.getAttribute('data-id'),
+                        email: btn.getAttribute('data-email'),
+                        subject: btn.getAttribute('data-subject'),
+                        message: btn.getAttribute('data-message')
+                    });
+                });
+            });
+
+            editClose.addEventListener('click', closeEditModal);
+            editCancel.addEventListener('click', closeEditModal);
+            editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
         });
     </script>
 </body>

@@ -341,7 +341,8 @@
 
         .form-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             gap: 1rem;
             margin-top: 0rem;
         }
@@ -353,6 +354,25 @@
 
         .form-actions form {
             margin: 0;
+            display: inline-block;
+        }
+
+        /* Specific styles for offer action buttons */
+        .offer-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .offer-actions .btn {
+            min-width: 140px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .offer-actions form {
+            margin: 0;
+            display: inline-block;
         }
 
         /* Offer Grid */
@@ -521,6 +541,16 @@
                 width: 100%;
                 margin-bottom: 0.5rem;
             }
+
+            .offer-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .offer-actions .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
         }
 
         /* Additional UI improvements */
@@ -611,6 +641,12 @@
         <div th:if="${param.deleted}" class="alert alert-success animate" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
             <i class="fas fa-check-circle"></i> Offer deleted successfully!
         </div>
+        <div th:if="${success}" class="alert alert-success animate" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger animate" style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+        </div>
         <div th:if="${param.error}" class="alert alert-danger animate" style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
             <i class="fas fa-exclamation-triangle"></i> An error occurred. Please try again.
         </div>
@@ -622,33 +658,50 @@
             <form method="post" th:action="@{/admin/offers}">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="offer-title" class="form-label">Title</label>
-                        <input type="text" id="offer-title" name="title" class="form-control" placeholder="Summer Sale 30% Off" required>
+                        <label for="offer-title" class="form-label">Title *</label>
+                        <input type="text" id="offer-title" name="title" class="form-control" placeholder="Summer Sale 30% Off" 
+                               required minlength="3" maxlength="100" 
+                               oninput="validateField(this, 'title')">
+                        <small class="field-error" id="title-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
-                        <label for="offer-image" class="form-label">Image URL</label>
-                        <input type="text" id="offer-image" name="imageUrl" class="form-control" placeholder="https://...">
+                        <label for="offer-image" class="form-label">Image URL *</label>
+                        <input type="url" id="offer-image" name="imageUrl" class="form-control" placeholder="https://..." 
+                               required oninput="validateField(this, 'imageUrl')">
+                        <small class="field-error" id="imageUrl-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
-                        <label for="offer-original-price" class="form-label">Original Price</label>
-                        <input type="number" step="0.01" id="offer-original-price" name="originalPrice" class="form-control" placeholder="Enter original price">
+                        <label for="offer-original-price" class="form-label">Original Price *</label>
+                        <input type="number" step="0.01" min="0.01" id="offer-original-price" name="originalPrice" class="form-control" 
+                               placeholder="Enter original price" required oninput="validatePrices()">
+                        <small class="field-error" id="originalPrice-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
-                        <label for="offer-discounted-price" class="form-label">Discounted Price</label>
-                        <input type="number" step="0.01" id="offer-discounted-price" name="discountedPrice" class="form-control" placeholder="Enter discounted price">
+                        <label for="offer-discounted-price" class="form-label">Discounted Price *</label>
+                        <input type="number" step="0.01" min="0.01" id="offer-discounted-price" name="discountedPrice" class="form-control" 
+                               placeholder="Enter discounted price" required oninput="validatePrices()">
+                        <small class="field-error" id="discountedPrice-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
-                        <label for="offer-start-date" class="form-label">Start Date</label>
-                        <input type="date" id="offer-start-date" name="startDate" class="form-control">
+                        <label for="offer-start-date" class="form-label">Start Date *</label>
+                        <input type="date" id="offer-start-date" name="startDate" class="form-control" 
+                               required oninput="validateDates()">
+                        <small class="field-error" id="startDate-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
-                        <label for="offer-end-date" class="form-label">End Date</label>
-                        <input type="date" id="offer-end-date" name="endDate" class="form-control">
+                        <label for="offer-end-date" class="form-label">End Date *</label>
+                        <input type="date" id="offer-end-date" name="endDate" class="form-control" 
+                               required oninput="validateDates()">
+                        <small class="field-error" id="endDate-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
                         <label for="offer-promo-code" class="form-label">Promo Code</label>
-                        <input type="text" id="offer-promo-code" name="promoCode" class="form-control" placeholder="e.g., WELCOME10" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()">
-                        <small style="color: var(--gray); font-size: 0.9rem;">Unique code for customers to apply this discount</small>
+                        <input type="text" id="offer-promo-code" name="promoCode" class="form-control" 
+                               placeholder="e.g., WELCOME10" style="text-transform: uppercase;" 
+                               minlength="3" maxlength="20" pattern="[A-Z0-9]+"
+                               oninput="this.value = this.value.toUpperCase(); validateField(this, 'promoCode')">
+                        <small style="color: var(--gray); font-size: 0.9rem;">Unique code for customers to apply this discount (optional)</small>
+                        <small class="field-error" id="promoCode-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                     <div class="form-group">
                         <label for="offer-active" class="form-label">Active</label>
@@ -658,8 +711,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="offer-description" class="form-label">Description</label>
-                        <textarea id="offer-description" name="description" class="form-control" placeholder="Describe the offer..." rows="4"></textarea>
+                        <label for="offer-description" class="form-label">Description *</label>
+                        <textarea id="offer-description" name="description" class="form-control" 
+                                  placeholder="Describe the offer..." rows="4" required minlength="10" maxlength="500"
+                                  oninput="validateField(this, 'description')"></textarea>
+                        <small class="field-error" id="description-error" style="color: #dc3545; font-size: 0.875rem; display: none;"></small>
                     </div>
                 </div>
                 <div class="form-actions" style="text-align: center; margin-top: 2rem;">
@@ -734,19 +790,22 @@
                                 <option th:selected="${!offer.isActive}" value="false">Inactive</option>
                             </select>
                         </div>
-                        <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+                        <div class="offer-actions">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Update Offer
                             </button>
-                            
-                            <!-- Delete button as separate form but styled inline -->
-                            <form th:action="@{'/admin/offers/' + ${offer.id} + '/delete'}" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer? This action cannot be undone.')">
-                                    <i class="fas fa-trash"></i> Delete Offer
-                                </button>
-                            </form>
                         </div>
                     </form>
+                    
+                    <!-- Delete button as completely separate form outside the update form -->
+                    <div class="offer-actions">
+                        <div></div> <!-- Empty div for spacing -->
+                        <form th:action="@{'/admin/offers/' + ${offer.id} + '/delete'}" method="post">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer? This action cannot be undone.')">
+                                <i class="fas fa-trash"></i> Delete Offer
+                            </button>
+                        </form>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -788,6 +847,163 @@
                 header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
             }
         });
+
+        // Set minimum date to today for start date
+        const startDateInput = document.getElementById('offer-start-date');
+        if (startDateInput) {
+            startDateInput.min = new Date().toISOString().split('T')[0];
+        }
+    });
+
+    // Validation functions
+    function validateField(field, fieldName) {
+        const errorElement = document.getElementById(fieldName + '-error');
+        let isValid = true;
+        let errorMessage = '';
+
+        switch (fieldName) {
+            case 'title':
+                if (field.value.trim().length < 3) {
+                    errorMessage = 'Title must be at least 3 characters long';
+                    isValid = false;
+                } else if (field.value.trim().length > 100) {
+                    errorMessage = 'Title must not exceed 100 characters';
+                    isValid = false;
+                }
+                break;
+            case 'description':
+                if (field.value.trim().length < 10) {
+                    errorMessage = 'Description must be at least 10 characters long';
+                    isValid = false;
+                } else if (field.value.trim().length > 500) {
+                    errorMessage = 'Description must not exceed 500 characters';
+                    isValid = false;
+                }
+                break;
+            case 'imageUrl':
+                if (!isValidUrl(field.value)) {
+                    errorMessage = 'Please enter a valid image URL';
+                    isValid = false;
+                }
+                break;
+            case 'promoCode':
+                if (field.value.trim() !== '' && !field.value.match(/^[A-Z0-9]+$/)) {
+                    errorMessage = 'Promo code can only contain letters and numbers';
+                    isValid = false;
+                } else if (field.value.trim() !== '' && field.value.length < 3) {
+                    errorMessage = 'Promo code must be at least 3 characters long';
+                    isValid = false;
+                } else if (field.value.trim() !== '' && field.value.length > 20) {
+                    errorMessage = 'Promo code must not exceed 20 characters';
+                    isValid = false;
+                }
+                break;
+        }
+
+        if (isValid) {
+            field.style.borderColor = '#28a745';
+            errorElement.style.display = 'none';
+        } else {
+            field.style.borderColor = '#dc3545';
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+        }
+
+        return isValid;
+    }
+
+    function validatePrices() {
+        const originalPrice = parseFloat(document.getElementById('offer-original-price').value);
+        const discountedPrice = parseFloat(document.getElementById('offer-discounted-price').value);
+        const originalError = document.getElementById('originalPrice-error');
+        const discountedError = document.getElementById('discountedPrice-error');
+
+        // Clear previous errors
+        originalError.style.display = 'none';
+        discountedError.style.display = 'none';
+
+        if (originalPrice && originalPrice <= 0) {
+            originalError.textContent = 'Original price must be greater than 0';
+            originalError.style.display = 'block';
+            return false;
+        }
+
+        if (discountedPrice && discountedPrice <= 0) {
+            discountedError.textContent = 'Discounted price must be greater than 0';
+            discountedError.style.display = 'block';
+            return false;
+        }
+
+        if (originalPrice && discountedPrice && discountedPrice >= originalPrice) {
+            discountedError.textContent = 'Discounted price must be less than original price';
+            discountedError.style.display = 'block';
+            return false;
+        }
+
+        return true;
+    }
+
+    function validateDates() {
+        const startDate = document.getElementById('offer-start-date').value;
+        const endDate = document.getElementById('offer-end-date').value;
+        const startError = document.getElementById('startDate-error');
+        const endError = document.getElementById('endDate-error');
+
+        // Clear previous errors
+        startError.style.display = 'none';
+        endError.style.display = 'none';
+
+        if (startDate && new Date(startDate) < new Date()) {
+            startError.textContent = 'Start date cannot be in the past';
+            startError.style.display = 'block';
+            return false;
+        }
+
+        if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+            endError.textContent = 'End date must be after start date';
+            endError.style.display = 'block';
+            return false;
+        }
+
+        return true;
+    }
+
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return string.startsWith('http://') || string.startsWith('https://');
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // Form submission validation
+    document.querySelector('form[method="post"]').addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Validate all required fields
+        const requiredFields = ['title', 'description', 'imageUrl', 'originalPrice', 'discountedPrice', 'startDate', 'endDate'];
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById('offer-' + fieldName);
+            if (field && !field.value.trim()) {
+                const errorElement = document.getElementById(fieldName + '-error');
+                errorElement.textContent = 'This field is required';
+                errorElement.style.display = 'block';
+                field.style.borderColor = '#dc3545';
+                isValid = false;
+            }
+        });
+
+        // Validate prices and dates
+        if (!validatePrices() || !validateDates()) {
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please correct the form errors before submitting.');
+        }
     });
 </script>
 </body>

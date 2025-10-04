@@ -7,6 +7,8 @@ import org.example.tourmanagement.booking.BookingRepository;
 import org.example.tourmanagement.booking.BookingStatus;
 import org.example.tourmanagement.user.User;
 import org.example.tourmanagement.user.UserRepository;
+import org.example.tourmanagement.offer.Offer;
+import org.example.tourmanagement.offer.OfferRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +18,13 @@ public class DataInitializer implements CommandLineRunner {
     private final DestinationRepository destinationRepository;
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final OfferRepository offerRepository;
 
-    public DataInitializer(DestinationRepository destinationRepository, BookingRepository bookingRepository, UserRepository userRepository) {
+    public DataInitializer(DestinationRepository destinationRepository, BookingRepository bookingRepository, UserRepository userRepository, OfferRepository offerRepository) {
         this.destinationRepository = destinationRepository;
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
+        this.offerRepository = offerRepository;
     }
 
     @Override
@@ -33,6 +37,11 @@ public class DataInitializer implements CommandLineRunner {
         // Create sample bookings for testing
         if (bookingRepository.count() == 0) {
             createSampleBookings();
+        }
+        
+        // Create sample offers for testing
+        if (offerRepository.count() == 0) {
+            createSampleOffers();
         }
     }
 
@@ -166,5 +175,47 @@ public class DataInitializer implements CommandLineRunner {
             booking2.calculateTotalAmount();
             bookingRepository.save(booking2);
         }
+    }
+    
+    private void createSampleOffers() {
+        // Create sample offers
+        Offer offer1 = new Offer();
+        offer1.setTitle("Summer Sale 30% Off");
+        offer1.setDescription("Get 30% off on all summer destinations. Perfect time to plan your vacation!");
+        offer1.setImageUrl("https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+        offer1.setOriginalPrice(1500.0);
+        offer1.setDiscountedPrice(1050.0);
+        offer1.setDiscountPercent(30);
+        offer1.setStartDate(java.time.LocalDate.now());
+        offer1.setEndDate(java.time.LocalDate.now().plusDays(30));
+        offer1.setPromoCode("SUMMER30");
+        offer1.setIsActive(true);
+        offerRepository.save(offer1);
+        
+        Offer offer2 = new Offer();
+        offer2.setTitle("Early Bird Special");
+        offer2.setDescription("Book your next trip 60 days in advance and save 25% on your booking!");
+        offer2.setImageUrl("https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+        offer2.setOriginalPrice(2000.0);
+        offer2.setDiscountedPrice(1500.0);
+        offer2.setDiscountPercent(25);
+        offer2.setStartDate(java.time.LocalDate.now());
+        offer2.setEndDate(java.time.LocalDate.now().plusDays(60));
+        offer2.setPromoCode("EARLY25");
+        offer2.setIsActive(true);
+        offerRepository.save(offer2);
+        
+        Offer offer3 = new Offer();
+        offer3.setTitle("Weekend Getaway");
+        offer3.setDescription("Special weekend packages with 20% discount on short trips!");
+        offer3.setImageUrl("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+        offer3.setOriginalPrice(800.0);
+        offer3.setDiscountedPrice(640.0);
+        offer3.setDiscountPercent(20);
+        offer3.setStartDate(java.time.LocalDate.now());
+        offer3.setEndDate(java.time.LocalDate.now().plusDays(14));
+        offer3.setPromoCode("WEEKEND20");
+        offer3.setIsActive(true);
+        offerRepository.save(offer3);
     }
 }
