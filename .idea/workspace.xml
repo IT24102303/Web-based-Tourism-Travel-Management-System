@@ -7,6 +7,7 @@
     <list default="true" id="b5def4b8-c68e-4515-aacc-987888d91d0a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminController.java" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminOfferController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/admin/AdminOfferController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingRepository.java" afterDir="false" />
@@ -23,6 +24,17 @@
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/manage-destinations.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/manage-destinations.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/manage-offers.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/manage-offers.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/my-bookings.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/my-bookings.html" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/booking/BookingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/support/InquiryStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/support/InquiryStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/DestinationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/DestinationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/OfferController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/tourmanagement/web/OfferController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-h2.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-h2.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/end-user.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/finance.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/inquiry-detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/inquiry-detail.html" afterDir="false" />
+>>>>>>> c92fc5034a150c6425e19bd3f1caea9faea5523b
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,6 +141,7 @@
       <workItem from="1758856926860" duration="9052000" />
       <workItem from="1758879857891" duration="1223000" />
       <workItem from="1758881916636" duration="5498000" />
+<<<<<<< HEAD
       <workItem from="1759302268524" duration="4528000" />
       <workItem from="1759325666202" duration="415000" />
       <workItem from="1759376357042" duration="11898000" />
@@ -137,6 +150,12 @@
       <workItem from="1759462996528" duration="8805000" />
       <workItem from="1759551019596" duration="2126000" />
       <workItem from="1759554527968" duration="2946000" />
+=======
+      <workItem from="1758969002735" duration="112000" />
+      <workItem from="1758989734516" duration="476000" />
+      <workItem from="1759052359124" duration="195000" />
+      <workItem from="1759062010967" duration="3643000" />
+>>>>>>> c92fc5034a150c6425e19bd3f1caea9faea5523b
     </task>
     <servers />
   </component>
